@@ -15,3 +15,10 @@ Installation
     cd mhd.js
     npm install
 
+License
+-------
+MIT
+
+Acknowledgements
+----------------
+Work funded in part by NHS Information Sharing Challenge Fund
