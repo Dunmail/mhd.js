@@ -149,5 +149,53 @@ vows.describe("Server behaviour").addBatch({
   	  'the status code is 200': function(err, z) {
                 assert.equal(z.statusCode, 200);
               }	 	 
-          }
+          },
+  "when GetDocument url has missing uuid" : {
+  	  topic: function() {
+  	  	zvisit(url.getDocumentReq_uuidMissing, this.callback);
+  	  	},
+  	  'the status code is 400': function(err, z) {
+                assert.equal(z.statusCode, 400);
+              }	 	 
+          },
+  "when GetDocument url has malformed uuid" : {
+  	  topic: function() {
+  	  	zvisit(url.getDocumentReq_uuidMalformed, this.callback);
+  	  	},
+  	  'the status code is 400': function(err, z) {
+                assert.equal(z.statusCode, 400);
+              }	 	 
+          },
+  "when GetDocument url has missing patientId" : {
+  	  topic: function() {
+  	  	zvisit(url.getDocumentReq_patientIdMissing, this.callback);
+  	  	},
+  	  'the status code is 400': function(err, z) {
+                assert.equal(z.statusCode, 400);
+              }	 	 
+          },
+  "when GetDocument url has empty patientId" : {
+  	  topic: function() {
+  	  	zvisit(url.getDocumentReq_patientIdEmpty, this.callback);
+  	  	},
+  	  'the status code is 400': function(err, z) {
+                assert.equal(z.statusCode, 400);
+              }	 	 
+          },
+  "when GetDocument url has malformed patientId" : {
+  	  topic: function() {
+  	  	zvisit(url.getDocumentReq_patientIdMalformed, this.callback);
+  	  	},
+  	  'the status code is 400': function(err, z) {
+                assert.equal(z.statusCode, 400);
+              }	 	 
+          },
+  "when GetDocument url has uuid not known to responder" : {
+  	  topic: function() {
+  	  	zvisit(url.getDocumentReq_uuidNotKnown, this.callback);
+  	  	},
+  	  'the status code is 404': function(err, z) {
+                assert.equal(z.statusCode, 404);
+              }
+  }
 }).run();

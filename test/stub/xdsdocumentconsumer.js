@@ -92,7 +92,12 @@ function findDocumentDossiers(originalUrl, patientId, query, callback){
 
 //Get Document [ITI-68]
 function getDocument(entryUuid, patientId, callback){
-  callback("xdsDocumentConsumerStub.getDocument for " + entryUuid + "[" + patientId + "]");
+	if (entryUuid == constants.unknownDocumentUuid){
+	  callback(undefined);
+	  return;
+	}
+	
+	callback("xdsDocumentConsumerStub.getDocument for " + entryUuid + "[" + patientId + "]");
 }
 
 exports.getDocumentDossier = getDocumentDossier;

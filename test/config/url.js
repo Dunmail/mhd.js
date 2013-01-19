@@ -18,4 +18,11 @@ exports.findDocumentDossiersReq_patientIdMalformed = constants.root + "net.ihe/D
 exports.findDocumentDossiersReq_patientIdNotKnown = constants.root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.unknownPatientId;
 
 exports.getDocumentReq = constants.root + "net.ihe/Document/" + constants.wellformedDocumentUuid + "/?PatientID=" + constants.wellformedPatientId;
+exports.getDocumentReq_uuidMissing = constants.root + "net.ihe/Document/?PatientID=" + constants.wellFormedPatientID;
+exports.getDocumentReq_uuidMalformed = constants.root + "net.ihe/Document/" + constants.malformedDocumentUuid + "/?PatientID=" + constants.wellformedPatientId;
+exports.getDocumentReq_uuidNotKnown = constants.root + "net.ihe/Document/" + constants.unknownDocumentUuid + "/?PatientID=" + constants.wellformedPatientId;
+exports.getDocumentReq_patientIdMissing = constants.root + "net.ihe/Document/" + constants.wellformedDocumentUuid + "/";
+exports.getDocumentReq_patientIdEmpty = constants.root + "net.ihe/Document/" + constants.wellformedDocumentUuid + "/?PatientID=";
+exports.getDocumentReq_patientIdMalformed = constants.root + "net.ihe/Document/" + constants.wellformedDocumentUuid + "/?PatientID=" + constants.malformedPatientId;
+exports.getDocumentReq_patientIdNotKnown = constants.root + "net.ihe/Document/" + constants.wellformedDocumentUuid + "/?PatientID=" + constants.unknownPatientId;
 
