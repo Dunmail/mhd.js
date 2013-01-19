@@ -19,3 +19,5 @@ exports.findDocumentDossiersReq_patientIdEmpty = root + "net.ihe/DocumentDossier
 exports.findDocumentDossiersReq_patientIdMalformed = root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.malformedPatientId;
 exports.findDocumentDossiersReq_patientIdNotKnown = root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.unknownPatientId;
 
+exports.getDocumentReq = root + "net.ihe/Document/" + constants.wellformedDocumentUuid + "/?PatientID=" + constants.wellformedPatientId;
+

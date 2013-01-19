@@ -1,7 +1,6 @@
 //var http = require("http");
 //var req = http.request();
 
-
 var vows = require("vows");
 var check = require('validator').check;
 var sanitize = require('validator').sanitize;
@@ -43,7 +42,7 @@ vows.describe("Server behaviour").addBatch({
                 assert.equal(z.statusCode, 200);
               },
           'the body is DocumentDossier[] json': function(err, z) {
-  	  	  assert.equal(z.html("body").length, 541);
+  	  	  assert.equal(z.html("body").length, 928);
               }	 	 
           },
   "when findDocumentDossiers url has missing patientId" : {
@@ -87,7 +86,7 @@ vows.describe("Server behaviour").addBatch({
                 assert.equal(z.statusCode, 200);
               },
   	  'the body is DocumentDossier json': function(err, z) {
-  	  	  assert.equal(z.html("body").length, 1014);
+  	  	  assert.equal(z.html("body").length, 967);
               }	 	 
           },
   "when GetDocumentDossier url has missing uuid" : {
@@ -140,5 +139,14 @@ vows.describe("Server behaviour").addBatch({
           'the reason phrase is Document Entry UUID not found': function(err, res) {
                 assert.equal(z.statusCode, "Document Entry UUID not found");
               }	 */	 
+          }
+}).addBatch({
+  "when GetDocument url is well-formed" : {
+  	  topic: function() {
+  	  	zvisit(url.getDocumentReq, this.callback);
+  	  	},
+  	  'the status code is 200': function(err, z) {
+                assert.equal(z.statusCode, 200);
+              }	 	 
           }
 }).run();
