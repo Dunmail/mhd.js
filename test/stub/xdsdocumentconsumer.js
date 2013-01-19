@@ -23,8 +23,9 @@ function getDocumentDossier(entryUuid, patientId)
 //Find Document Dossiers [ITI-67]
 function findDocumentDossiers()
 {
+	var result = JSON.stringify(constants.findDocumentDossiers);
 	
-	return "xdsDocumentConsumerStub.findDocumentDossiers";
+	return result;
 }
 
 //Get Document [ITI-68]

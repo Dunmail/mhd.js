@@ -41,4 +41,21 @@ exports.documentDossier = {documentEntry:{
 	mimeType:'text/xml',
 	uniqueId:'1.2009.0827.08.33.5074',
 	entryUUID:'urn:uuid:14a9fdec-0af4-45bb-adf2-d752b49bcc7d'}}
+
+exports.findDocumentDossiers = {
+  updated:"Sun Oct 21 2011 12:34:28 GMT-0700",
+  self:"http://example.com/foo/bar/net.ihe/DocumentDossier/search?key=value&foo=bar",
+  entries:[
+    {
+      id:"123456", 
+      self:"http://example.com/foo/bar/net.ihe/DocumentDossier/123456",  
+      related:"http://example.com/foo/bar/net.ihe/Document/abcxyz",
+      updated:"Sun Oct 21 2011 12:34:28 GMT-0700"}, 
+    {
+      id:"9876",
+      self:"http://example.com/foo/bar/net.ihe/DocumentDossier/9876",
+      related:"http://example.com/foo/bar/net.ihe/Document/werwer",
+      updated:"Sun Oct 28 2011 08:34:28 GMT-0700"
+    }]
+}
 	
