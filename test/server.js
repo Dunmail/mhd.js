@@ -1,3 +1,7 @@
+//var http = require("http");
+//var req = http.request();
+
+
 var vows = require("vows");
 var check = require('validator').check;
 var sanitize = require('validator').sanitize;
@@ -29,6 +33,50 @@ vows.describe("Server behaviour").addBatch({
   	  'the status code is 404': function(err, z) {
                 assert.equal(z.statusCode, 404);
               }	 
+          }
+}).addBatch({
+  "when findDocumentDossiers url is well-formed" : {
+  	  topic: function() {
+  	  	zvisit(url.findDocumentDossiersReq, this.callback);
+  	  	},
+  	  'the status code is 200': function(err, z) {
+                assert.equal(z.statusCode, 200);
+              },
+          'the body is DocumentDossier[] json': function(err, z) {
+  	  	  assert.equal(z.html("body").length, 541);
+              }	 	 
+          },
+  "when findDocumentDossiers url has missing patientId" : {
+  	  topic: function() {
+  	  	zvisit(url.findDocumentDossiersReq_patientIdMissing, this.callback);
+  	  	},
+  	  'the status code is 400': function(err, z) {
+                assert.equal(z.statusCode, 400);
+              }	 	 
+          },
+  "when findDocumentDossiers url has empty patientId" : {
+  	  topic: function() {
+  	  	zvisit(url.findDocumentDossiersReq_patientIdEmpty, this.callback);
+  	  	},
+  	  'the status code is 400': function(err, z) {
+                assert.equal(z.statusCode, 400);
+              }	 	 
+  	  },
+  "when findDocumentDossiers url has malformed patientId" : {
+  	  topic: function() {
+  	  	zvisit(url.findDocumentDossiersReq_patientIdMalformed, this.callback);
+  	  	},
+  	  'the status code is 400': function(err, z) {
+                assert.equal(z.statusCode, 400);
+              }	 	 
+          },
+  "when findDocumentDossiers url has patientId not known to responder" : {
+  	  topic: function() {
+  	  	zvisit(url.findDocumentDossiersReq_patientIdNotKnown, this.callback);
+  	  	},
+  	  'the status code is 404': function(err, z) {
+                assert.equal(z.statusCode, 404);
+              }	 	 
           }
 }).addBatch({
   "when GetDocumentDossier url is well-formed" : {

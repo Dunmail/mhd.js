@@ -21,8 +21,15 @@ function getDocumentDossier(entryUuid, patientId)
 }
 
 //Find Document Dossiers [ITI-67]
-function findDocumentDossiers()
+function findDocumentDossiers(patientId)
 {
+	if (patientId == constants.unknownPatientId){
+	  return;
+	}
+
+	//TODO: Search params
+	//TODO: Result to unsupported mediatype error 415, 
+	
 	var result = JSON.stringify(constants.findDocumentDossiers);
 	
 	return result;
