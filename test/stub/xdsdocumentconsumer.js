@@ -3,13 +3,13 @@ var constants=require("../config/constants.js");
 //NB: In real implementation need to ensure that these functions are non-blocking
 
 //Get Document Dossier [ITI-66]
-function getDocumentDossier(entryUuid, patientId){
+function getDocumentDossier(entryUuid, patientId, callback){
 	if (entryUuid == constants.unknownDocumentUuid){
-	  return;
+	  callback();
 	}
 	
 	if (patientId == constants.unknownPatientId){
-	  return;
+	  callback();
 	}
 
 	var dossier = {
@@ -51,13 +51,13 @@ function getDocumentDossier(entryUuid, patientId){
 	
 	//TODO: How do we determine of document is deprecated?
 	
-	return JSON.stringify(dossier);
+	callback(JSON.stringify(dossier));
 }
 
 //Find Document Dossiers [ITI-67]
-function findDocumentDossiers(originalUrl, patientId, query){
+function findDocumentDossiers(originalUrl, patientId, query, callback){
 	if (patientId == constants.unknownPatientId){
-	  return;
+	  callback();
 	}
 
 	//TODO: Result to unsupported mediatype error 415, 
@@ -84,12 +84,12 @@ function findDocumentDossiers(originalUrl, patientId, query){
             updated:timestamp}
         ]}
 	
-	return JSON.stringify(result);
+	callback(JSON.stringify(result));
 }
 
 //Get Document [ITI-68]
-function getDocument(entryUuid, patientId){
-	return "xdsDocumentConsumerStub.getDocument for " + entryUuid + "[" + patientId + "]";
+function getDocument(entryUuid, patientId, callback){
+  callback("xdsDocumentConsumerStub.getDocument for " + entryUuid + "[" + patientId + "]");
 }
 
 exports.getDocumentDossier = getDocumentDossier;
