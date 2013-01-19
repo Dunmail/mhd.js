@@ -21,16 +21,16 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	    zvisit(constants.root, this.callback);
   	  },
-  	  'the status code is 404': function(err, z) {
-                assert.equal(z.statusCode, 404);
+  	  'the status code is 403': function(err, z) {
+                assert.equal(z.statusCode, 403);
               }	 
           },
   "when browsing unknown url":{
   	  topic: function() {
   	  	zvisit(url.unknown, this.callback);
   	  },
-  	  'the status code is 404': function(err, z) {
-                assert.equal(z.statusCode, 404);
+  	  'the status code is 403': function(err, z) {
+                assert.equal(z.statusCode, 403);
               }	 
           }
 }).addBatch({
@@ -135,10 +135,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 404': function(err, z) {
                 assert.equal(z.statusCode, 404);
-              }/*,
-          'the reason phrase is Document Entry UUID not found': function(err, res) {
-                assert.equal(z.statusCode, "Document Entry UUID not found");
-              }	 */	 
+              }
+      //        ,
+      //    'the reason phrase is Document Entry UUID not found': function(err, res) {
+      //          assert.equal(z.statusCode, "Document Entry UUID not found");
+      //        }	 	 
           }
 }).addBatch({
   "when GetDocument url is well-formed" : {

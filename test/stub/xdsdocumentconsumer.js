@@ -5,11 +5,13 @@ var constants=require("../config/constants.js");
 //Get Document Dossier [ITI-66]
 function getDocumentDossier(entryUuid, patientId, callback){
 	if (entryUuid == constants.unknownDocumentUuid){
-	  callback();
+	  callback(undefined);
+	  return;
 	}
 	
 	if (patientId == constants.unknownPatientId){
-	  callback();
+	  callback(undefined);
+	  return;
 	}
 
 	var dossier = {
@@ -58,6 +60,7 @@ function getDocumentDossier(entryUuid, patientId, callback){
 function findDocumentDossiers(originalUrl, patientId, query, callback){
 	if (patientId == constants.unknownPatientId){
 	  callback();
+	  return;
 	}
 
 	//TODO: Result to unsupported mediatype error 415, 
