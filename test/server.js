@@ -19,7 +19,7 @@ function zvisit(url, callback){
 vows.describe("Server behaviour").addBatch({
   "when browsing root url":{
   	  topic: function() {
-  	    zvisit(url.root, this.callback);
+  	    zvisit(constants.root, this.callback);
   	  },
   	  'the status code is 404': function(err, z) {
                 assert.equal(z.statusCode, 404);

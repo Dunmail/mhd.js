@@ -1,7 +1,6 @@
 var constants=require("../config/constants.js");
-var url=require("../config/url.js");
 
-//In real implementation need to ensure that these functions are non-blocking
+//NB: In real implementation need to ensure that these functions are non-blocking
 
 //Get Document Dossier [ITI-66]
 function getDocumentDossier(entryUuid, patientId){
@@ -70,18 +69,18 @@ function findDocumentDossiers(originalUrl, patientId, query){
 	entries:[
 	  {
 	    id:constants.wellformedDocumentUuid, 
-	    self: url.root + "/net.ihe/DocumentDossier/" + constants.wellformedDocumentUuid + "/?PatientID=" + patientId,  
-	    related:url.root + "/net.ihe/Document/" + constants.wellformedDocumentUuid + "/?PatientID=" + patientId,
+	    self: constants.root + "/net.ihe/DocumentDossier/" + constants.wellformedDocumentUuid + "/?PatientID=" + patientId,  
+	    related:constants.root + "/net.ihe/Document/" + constants.wellformedDocumentUuid + "/?PatientID=" + patientId,
 	    updated:timestamp}, 
 	  {
             id:"123456", 
-            self:url.root + "/net.ihe/DocumentDossier/123456/?PatientID=" + patientId,  
-            related:url.root + "/net.ihe/Document/abcxyz/?PatientID=" + patientId,
+            self:constants.root + "/net.ihe/DocumentDossier/123456/?PatientID=" + patientId,  
+            related:constants.root + "/net.ihe/Document/abcxyz/?PatientID=" + patientId,
             updated:timestamp}, 
           {
             id:"9876",
-            self:url.root + "/net.ihe/DocumentDossier/9876/?PatientID=" + patientId,
-            related:url.root + "/net.ihe/Document/werwer?PatientID=" + patientId,
+            self:constants.root + "/net.ihe/DocumentDossier/9876/?PatientID=" + patientId,
+            related:constants.root + "/net.ihe/Document/werwer?PatientID=" + patientId,
             updated:timestamp}
         ]}
 	
