@@ -1,9 +1,6 @@
-//var http = require("http");
-//var req = http.request();
-
 var vows = require("vows");
 var check = require('validator').check;
-var sanitize = require('validator').sanitize;
+//var sanitize = require('validator').sanitize;
 var zombie = require("zombie");
 var assert = require("assert");
 var constants = require("./config/constants.js");
