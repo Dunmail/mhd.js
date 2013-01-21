@@ -5,12 +5,17 @@ var constants=require("../config/constants.js");
 //Get Document Dossier [ITI-66]
 function getDocumentDossier(entryUuid, patientId, callback){
 	if (entryUuid == constants.unknownDocumentUuid){
-	  callback(undefined);
+	  callback("Unknown Document UUID", null);
 	  return;
 	}
-	
+
+	if (entryUuid == constants.deprecatedDocumentUuid){
+	  callback("Deprecated Document UUID", null);
+	  return;
+	}
+
 	if (patientId == constants.unknownPatientId){
-	  callback(undefined);
+	  callback("Unknown PatientID", null);
 	  return;
 	}
 
@@ -51,20 +56,23 @@ function getDocumentDossier(entryUuid, patientId, callback){
 	uniqueId:'1.2009.0827.08.33.5074',
 	entryUUID:'urn:uuid:' + entryUuid}};
 	
-	//TODO: How do we determine of document is deprecated?
-	
-	callback(JSON.stringify(dossier));
+	callback(null, JSON.stringify(dossier));
 }
 
 //Find Document Dossiers [ITI-67]
 function findDocumentDossiers(originalUrl, patientId, query, callback){
 	if (patientId == constants.unknownPatientId){
-	  callback();
+	  callback("Unknown PatientID", null);
 	  return;
 	}
-
+	
+	if (patientId == constants.noDocumentsPatientId){
+	  callback("No Document Entries found", null);
+	  return;
+	}
+	
 	//TODO: Result to unsupported mediatype error 415, 
-	//TODO: handle query
+
 	var timestamp = new Date().toString();
 	var result = {
 	updated:timestamp,
@@ -87,17 +95,27 @@ function findDocumentDossiers(originalUrl, patientId, query, callback){
             updated:timestamp}
         ]}
 	
-	callback(JSON.stringify(result));
+	callback(null, JSON.stringify(result));
 }
 
 //Get Document [ITI-68]
 function getDocument(entryUuid, patientId, callback){
 	if (entryUuid == constants.unknownDocumentUuid){
-	  callback(undefined);
+	  callback("Unknown Document UUID", null);
 	  return;
 	}
 	
-	callback("xdsDocumentConsumerStub.getDocument for " + entryUuid + "[" + patientId + "]");
+	if (entryUuid == constants.deprecatedDocumentUuid){
+	  callback("Deprecated Document UUID", null);
+	  return;
+	}
+	
+	if (patientId == constants.unknownPatientId){
+	  callback("Unknown PatientID", null);
+	  return;
+	}
+	
+	callback(null, "xdsDocumentConsumerStub.getDocument for " + entryUuid + "[" + patientId + "]");
 }
 
 exports.getDocumentDossier = getDocumentDossier;

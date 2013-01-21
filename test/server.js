@@ -24,6 +24,11 @@ vows.describe("Server behaviour").addBatch({
   	  },
   	  'the status code is 403': function(err, res) {
                 assert.equal(res.statusCode, 403);
+              },
+          "the reason phrase is 'Request not supported'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Request not supported");
+          	});
               }	 
           },
   "when browsing unknown url":{
@@ -32,7 +37,12 @@ vows.describe("Server behaviour").addBatch({
   	  },
   	  'the status code is 403': function(err, res) {
                 assert.equal(res.statusCode, 403);
-              }	 
+              },
+          "the reason phrase is 'Request not supported'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Request not supported");
+          	});
+              }		 
           }
 }).addBatch({
   "when findDocumentDossiers url is well-formed" : {
@@ -54,6 +64,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
               }	 	 
           },
   "when findDocumentDossiers url has empty patientId" : {
@@ -62,6 +77,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
               }	 	 
   	  },
   "when findDocumentDossiers url has malformed patientId" : {
@@ -70,6 +90,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
               }	 	 
           },
   "when findDocumentDossiers url has patientId not known to responder" : {
@@ -78,7 +103,25 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 404': function(err, res) {
                 assert.equal(res.statusCode, 404);
-              }	 	 
+              },
+          "the reason phrase is 'No Document Entries found'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "No Document Entries found");
+          	});
+              }		 	 
+          },
+  "when findDocumentDossiers url has patientId for patient with no documents" : {
+  	  topic: function() {
+  	  	get(url.findDocumentDossiersReq_patientIdNoDocuments, this.callback);
+  	  	},
+  	  'the status code is 404': function(err, res) {
+                assert.equal(res.statusCode, 404);
+              },
+          "the reason phrase is 'No Document Entries found'": function(err, res) {
+             	res.on("data", function(d) {
+          	  assert.equal(d.toString(), "No Document Entries found");
+          	});
+              } 	 
           }
 }).addBatch({
   "when GetDocumentDossier url is well-formed" : {
@@ -100,6 +143,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
               }	 	 
           },
   "when GetDocumentDossier url has malformed uuid" : {
@@ -108,6 +156,37 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
+              }	 	 
+          },
+  "when GetDocumentDossier url has uuid not known to responder" : {
+  	  topic: function() {
+  	  	get(url.getDocumentDossierReq_uuidNotKnown, this.callback);
+  	  	},
+  	  "the status code is 404": function(err, res) {
+                assert.equal(res.statusCode, 404);
+              },
+          "the reason phrase is 'Document Entry UUID not found'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Document Entry UUID not found");
+          	});
+              }	 	 
+          },
+  "when GetDocumentDossier url has uuid for deprecated document" : {
+  	  topic: function() {
+  	  	get(url.getDocumentDossierReq_uuidDeprecated, this.callback);
+  	  	},
+  	  "the status code is 410": function(err, res) {
+                assert.equal(res.statusCode, 410);
+              },
+          "the reason phrase is 'Document Entry UUID deprecated'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Document Entry UUID deprecated");
+          	});
               }	 	 
           },
   "when GetDocumentDossier url has missing patientId" : {
@@ -116,6 +195,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
               }	 	 
           },
   "when GetDocumentDossier url has empty patientId" : {
@@ -124,6 +208,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
               }	 	 
           },
   "when GetDocumentDossier url has malformed patientId" : {
@@ -132,17 +221,22 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
               }	 	 
           },
-  "when GetDocumentDossier url has uuid not known to responder" : {
+  "when GetDocumentDossier url has patientId not known to responder" : {
   	  topic: function() {
-  	  	get(url.getDocumentDossierReq_uuidNotKnown, this.callback);
+  	  	get(url.getDocumentDossierReq_patientIdNotKnown, this.callback);
   	  	},
-  	  'the status code is 404': function(err, res) {
+  	  "the status code is 404": function(err, res) {
                 assert.equal(res.statusCode, 404);
               },
-          'the reason phrase is Document Entry UUID not found': function(err, res) {
-             	res.on('data', function(d) {
+          "the reason phrase is 'Document Entry UUID not found'": function(err, res) {
+             	res.on("data", function(d) {
                   assert.equal(d.toString(), "Document Entry UUID not found");
           	});
               }	 	 
@@ -162,6 +256,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
               }	 	 
           },
   "when GetDocument url has malformed uuid" : {
@@ -170,6 +269,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
               }	 	 
           },
   "when GetDocument url has missing patientId" : {
@@ -178,6 +282,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
               }	 	 
           },
   "when GetDocument url has empty patientId" : {
@@ -186,6 +295,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
               }	 	 
           },
   "when GetDocument url has malformed patientId" : {
@@ -194,6 +308,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 400': function(err, res) {
                 assert.equal(res.statusCode, 400);
+              },
+          "the reason phrase is 'Bad Request'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Bad Request");
+          	});
               }	 	 
           },
   "when GetDocument url has uuid not known to responder" : {
@@ -202,6 +321,11 @@ vows.describe("Server behaviour").addBatch({
   	  	},
   	  'the status code is 404': function(err, res) {
                 assert.equal(res.statusCode, 404);
-              }
+              },
+          "the reason phrase is 'Document Entry UUID not found'": function(err, res) {
+             	res.on("data", function(d) {
+                  assert.equal(d.toString(), "Document Entry UUID not found");
+          	});
+              }	 
   }
 }).run();

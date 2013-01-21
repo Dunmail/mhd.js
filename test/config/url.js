@@ -6,6 +6,7 @@ exports.getDocumentDossierReq = constants.root + "net.ihe/DocumentDossier/" + co
 exports.getDocumentDossierReq_uuidMissing = constants.root + "net.ihe/DocumentDossier/?PatientID=" + constants.wellFormedPatientID;
 exports.getDocumentDossierReq_uuidMalformed = constants.root + "net.ihe/DocumentDossier/" + constants.malformedDocumentUuid + "/?PatientID=" + constants.wellformedPatientId;
 exports.getDocumentDossierReq_uuidNotKnown = constants.root + "net.ihe/DocumentDossier/" + constants.unknownDocumentUuid + "/?PatientID=" + constants.wellformedPatientId;
+exports.getDocumentDossierReq_uuidDeprecated = constants.root + "net.ihe/DocumentDossier/" + constants.deprecatedDocumentUuid + "/?PatientID=" + constants.wellformedPatientId;
 exports.getDocumentDossierReq_patientIdMissing = constants.root + "net.ihe/DocumentDossier/" + constants.wellformedDocumentUuid + "/";
 exports.getDocumentDossierReq_patientIdEmpty = constants.root + "net.ihe/DocumentDossier/" + constants.wellformedDocumentUuid + "/?PatientID=";
 exports.getDocumentDossierReq_patientIdMalformed = constants.root + "net.ihe/DocumentDossier/" + constants.wellformedDocumentUuid + "/?PatientID=" + constants.malformedPatientId;
@@ -16,6 +17,7 @@ exports.findDocumentDossiersReq_patientIdMissing = constants.root + "net.ihe/Doc
 exports.findDocumentDossiersReq_patientIdEmpty = constants.root + "net.ihe/DocumentDossier/search/?PatientID=";
 exports.findDocumentDossiersReq_patientIdMalformed = constants.root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.malformedPatientId;
 exports.findDocumentDossiersReq_patientIdNotKnown = constants.root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.unknownPatientId;
+exports.findDocumentDossiersReq_patientIdNoDocuments = constants.root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.noDocumentsPatientId;
 
 exports.getDocumentReq = constants.root + "net.ihe/Document/" + constants.wellformedDocumentUuid + "/?PatientID=" + constants.wellformedPatientId;
 exports.getDocumentReq_uuidMissing = constants.root + "net.ihe/Document/?PatientID=" + constants.wellFormedPatientID;
