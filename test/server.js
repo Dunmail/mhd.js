@@ -1,198 +1,207 @@
 var vows = require("vows");
-var check = require('validator').check;
-//var sanitize = require('validator').sanitize;
-var zombie = require("zombie");
+var check = require("validator").check;
+var https = require("https");
 var assert = require("assert");
 var constants = require("./config/constants.js");
 var url = require("./config/url.js");
 
-function zvisit(url, callback){
-  z = new zombie();
-  z.visit(url, callback);
+function get(url, cb) {
+ var req = https.get(url,
+    function(res) {
+      cb("error", res); 
+    }	  
+  )
+  req.on('error', function(e) {
+    console.error(e);  
+  });
+  req.end();
 }
-
-//TODO: ? switch to lower level HTTP tests
 
 vows.describe("Server behaviour").addBatch({
   "when browsing root url":{
   	  topic: function() {
-  	    zvisit(constants.root, this.callback);
+  	    get(constants.root, this.callback);
   	  },
-  	  'the status code is 403': function(err, z) {
-                assert.equal(z.statusCode, 403);
+  	  'the status code is 403': function(err, res) {
+                assert.equal(res.statusCode, 403);
               }	 
           },
   "when browsing unknown url":{
   	  topic: function() {
-  	  	zvisit(url.unknown, this.callback);
+  	  	get(url.unknown, this.callback);
   	  },
-  	  'the status code is 403': function(err, z) {
-                assert.equal(z.statusCode, 403);
+  	  'the status code is 403': function(err, res) {
+                assert.equal(res.statusCode, 403);
               }	 
           }
 }).addBatch({
   "when findDocumentDossiers url is well-formed" : {
   	  topic: function() {
-  	  	zvisit(url.findDocumentDossiersReq, this.callback);
+  	  	get(url.findDocumentDossiersReq, this.callback);
   	  	},
-  	  'the status code is 200': function(err, z) {
-                assert.equal(z.statusCode, 200);
+  	  'the status code is 200': function(err, res) {
+                assert.equal(res.statusCode, 200);
               },
-          'the body is DocumentDossier[] json': function(err, z) {
-  	  	  assert.equal(z.html("body").length, 928);
+          'the body is DocumentDossier[] json': function(err, res) {
+          	  res.on('data', function(d) {
+          	    var body = JSON.parse(d.toString('utf8'));
+          	  });
               }	 	 
           },
   "when findDocumentDossiers url has missing patientId" : {
   	  topic: function() {
-  	  	zvisit(url.findDocumentDossiersReq_patientIdMissing, this.callback);
+  	  	get(url.findDocumentDossiersReq_patientIdMissing, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
           },
   "when findDocumentDossiers url has empty patientId" : {
   	  topic: function() {
-  	  	zvisit(url.findDocumentDossiersReq_patientIdEmpty, this.callback);
+  	  	get(url.findDocumentDossiersReq_patientIdEmpty, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
   	  },
   "when findDocumentDossiers url has malformed patientId" : {
   	  topic: function() {
-  	  	zvisit(url.findDocumentDossiersReq_patientIdMalformed, this.callback);
+  	  	get(url.findDocumentDossiersReq_patientIdMalformed, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
           },
   "when findDocumentDossiers url has patientId not known to responder" : {
   	  topic: function() {
-  	  	zvisit(url.findDocumentDossiersReq_patientIdNotKnown, this.callback);
+  	  	get(url.findDocumentDossiersReq_patientIdNotKnown, this.callback);
   	  	},
-  	  'the status code is 404': function(err, z) {
-                assert.equal(z.statusCode, 404);
+  	  'the status code is 404': function(err, res) {
+                assert.equal(res.statusCode, 404);
               }	 	 
           }
 }).addBatch({
   "when GetDocumentDossier url is well-formed" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentDossierReq, this.callback);
+  	  	get(url.getDocumentDossierReq, this.callback);
   	  	},
-  	  'the status code is 200': function(err, z) {
-                assert.equal(z.statusCode, 200);
+  	  'the status code is 200': function(err, res) {
+                assert.equal(res.statusCode, 200);
               },
-  	  'the body is DocumentDossier json': function(err, z) {
-  	  	  assert.equal(z.html("body").length, 967);
+  	  'the body is DocumentDossier json': function(err, res) { 
+                res.on('data', function(d) {        	  
+  	  	  var body = JSON.parse(d.toString('utf8'));
+  	  	});
               }	 	 
           },
   "when GetDocumentDossier url has missing uuid" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentDossierReq_uuidMissing, this.callback);
+  	  	get(url.getDocumentDossierReq_uuidMissing, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
           },
   "when GetDocumentDossier url has malformed uuid" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentDossierReq_uuidMalformed, this.callback);
+  	  	get(url.getDocumentDossierReq_uuidMalformed, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
           },
   "when GetDocumentDossier url has missing patientId" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentDossierReq_patientIdMissing, this.callback);
+  	  	get(url.getDocumentDossierReq_patientIdMissing, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
           },
   "when GetDocumentDossier url has empty patientId" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentDossierReq_patientIdEmpty, this.callback);
+  	  	get(url.getDocumentDossierReq_patientIdEmpty, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
           },
   "when GetDocumentDossier url has malformed patientId" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentDossierReq_patientIdMalformed, this.callback);
+  	  	get(url.getDocumentDossierReq_patientIdMalformed, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
           },
   "when GetDocumentDossier url has uuid not known to responder" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentDossierReq_uuidNotKnown, this.callback);
+  	  	get(url.getDocumentDossierReq_uuidNotKnown, this.callback);
   	  	},
-  	  'the status code is 404': function(err, z) {
-                assert.equal(z.statusCode, 404);
-              }
-      //        ,
-      //    'the reason phrase is Document Entry UUID not found': function(err, res) {
-      //          assert.equal(z.statusCode, "Document Entry UUID not found");
-      //        }	 	 
+  	  'the status code is 404': function(err, res) {
+                assert.equal(res.statusCode, 404);
+              },
+          'the reason phrase is Document Entry UUID not found': function(err, res) {
+             	res.on('data', function(d) {
+                  assert.equal(d.toString(), "Document Entry UUID not found");
+          	});
+              }	 	 
           }
 }).addBatch({
   "when GetDocument url is well-formed" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentReq, this.callback);
+  	  	get(url.getDocumentReq, this.callback);
   	  	},
-  	  'the status code is 200': function(err, z) {
-                assert.equal(z.statusCode, 200);
+  	  'the status code is 200': function(err, res) {
+                assert.equal(res.statusCode, 200);
               }	 	 
           },
   "when GetDocument url has missing uuid" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentReq_uuidMissing, this.callback);
+  	  	get(url.getDocumentReq_uuidMissing, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
           },
   "when GetDocument url has malformed uuid" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentReq_uuidMalformed, this.callback);
+  	  	get(url.getDocumentReq_uuidMalformed, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
           },
   "when GetDocument url has missing patientId" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentReq_patientIdMissing, this.callback);
+  	  	get(url.getDocumentReq_patientIdMissing, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
           },
   "when GetDocument url has empty patientId" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentReq_patientIdEmpty, this.callback);
+  	  	get(url.getDocumentReq_patientIdEmpty, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
           },
   "when GetDocument url has malformed patientId" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentReq_patientIdMalformed, this.callback);
+  	  	get(url.getDocumentReq_patientIdMalformed, this.callback);
   	  	},
-  	  'the status code is 400': function(err, z) {
-                assert.equal(z.statusCode, 400);
+  	  'the status code is 400': function(err, res) {
+                assert.equal(res.statusCode, 400);
               }	 	 
           },
   "when GetDocument url has uuid not known to responder" : {
   	  topic: function() {
-  	  	zvisit(url.getDocumentReq_uuidNotKnown, this.callback);
+  	  	get(url.getDocumentReq_uuidNotKnown, this.callback);
   	  	},
-  	  'the status code is 404': function(err, z) {
-                assert.equal(z.statusCode, 404);
+  	  'the status code is 404': function(err, res) {
+                assert.equal(res.statusCode, 404);
               }
   }
 }).run();
