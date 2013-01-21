@@ -1,10 +1,6 @@
 var server = require("./lib/server.js");
 var fs = require("fs");
-var xds = require("./test/stub/xdsdocumentconsumer.js");
-xds.options = {
-    registry:"http://192.168.10.65:2010/openxds/services/DocumentRegistry/",
-    repository:"http://192.168.10.65:2010/openxds/services/DocumentRepository/"
-  } 
+var xds = require("./test/stub/xdsdocumentconsumer.js"); 
 var config = {
 	name: "Mobile access to Health Documents (MHD) service",
 	port: 1337,

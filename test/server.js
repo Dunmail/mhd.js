@@ -1,3 +1,10 @@
+/*
+Server setup to test routing against stub xdsdocumentconsumer
+
+node mhdstub.js
+
+*/
+
 var vows = require("vows");
 var check = require("validator").check;
 var https = require("https");
