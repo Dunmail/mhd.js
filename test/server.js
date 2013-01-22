@@ -15,10 +15,10 @@ var url = require("./config/url.js");
 function get(url, cb) {
  var req = https.get(url,
     function(res) {
-      cb("error", res); 
+      cb(null, res); 
     }	  
   )
-  req.on('error', function(e) {
+  req.on("error", function(e) {
     console.error(e);  
   });
   req.end();
@@ -95,7 +95,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.findDocumentDossiersReq_patientIdMalformed, this.callback);
   	  	},
-  	  'the status code is 400': function(err, res) {
+  	  "the status code is 400": function(err, res) {
                 assert.equal(res.statusCode, 400);
               },
           "the reason phrase is 'Bad Request'": function(err, res) {
@@ -108,7 +108,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.findDocumentDossiersReq_patientIdNotKnown, this.callback);
   	  	},
-  	  'the status code is 404': function(err, res) {
+  	  "the status code is 404": function(err, res) {
                 assert.equal(res.statusCode, 404);
               },
           "the reason phrase is 'No Document Entries found'": function(err, res) {
@@ -121,7 +121,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.findDocumentDossiersReq_patientIdNoDocuments, this.callback);
   	  	},
-  	  'the status code is 404': function(err, res) {
+  	  "the status code is 404": function(err, res) {
                 assert.equal(res.statusCode, 404);
               },
           "the reason phrase is 'No Document Entries found'": function(err, res) {
@@ -135,10 +135,10 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentDossierReq, this.callback);
   	  	},
-  	  'the status code is 200': function(err, res) {
+  	  "the status code is 200": function(err, res) {
                 assert.equal(res.statusCode, 200);
               },
-  	  'the body is DocumentDossier json': function(err, res) { 
+  	  "the body is DocumentDossier json": function(err, res) { 
                 res.on('data', function(d) {        	  
   	  	  var body = JSON.parse(d.toString('utf8'));
   	  	});
@@ -148,7 +148,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentDossierReq_uuidMissing, this.callback);
   	  	},
-  	  'the status code is 400': function(err, res) {
+  	  "the status code is 400": function(err, res) {
                 assert.equal(res.statusCode, 400);
               },
           "the reason phrase is 'Bad Request'": function(err, res) {
@@ -161,7 +161,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentDossierReq_uuidMalformed, this.callback);
   	  	},
-  	  'the status code is 400': function(err, res) {
+  	  "the status code is 400": function(err, res) {
                 assert.equal(res.statusCode, 400);
               },
           "the reason phrase is 'Bad Request'": function(err, res) {
@@ -200,7 +200,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentDossierReq_patientIdMissing, this.callback);
   	  	},
-  	  'the status code is 400': function(err, res) {
+  	  "the status code is 400": function(err, res) {
                 assert.equal(res.statusCode, 400);
               },
           "the reason phrase is 'Bad Request'": function(err, res) {
@@ -213,7 +213,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentDossierReq_patientIdEmpty, this.callback);
   	  	},
-  	  'the status code is 400': function(err, res) {
+  	  "the status code is 400": function(err, res) {
                 assert.equal(res.statusCode, 400);
               },
           "the reason phrase is 'Bad Request'": function(err, res) {
@@ -226,7 +226,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentDossierReq_patientIdMalformed, this.callback);
   	  	},
-  	  'the status code is 400': function(err, res) {
+  	  "the status code is 400": function(err, res) {
                 assert.equal(res.statusCode, 400);
               },
           "the reason phrase is 'Bad Request'": function(err, res) {
@@ -253,7 +253,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentReq, this.callback);
   	  	},
-  	  'the status code is 200': function(err, res) {
+  	  "the status code is 200": function(err, res) {
                 assert.equal(res.statusCode, 200);
               }	 	 
           },
@@ -261,7 +261,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentReq_uuidMissing, this.callback);
   	  	},
-  	  'the status code is 400': function(err, res) {
+  	  "the status code is 400": function(err, res) {
                 assert.equal(res.statusCode, 400);
               },
           "the reason phrase is 'Bad Request'": function(err, res) {
@@ -274,7 +274,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentReq_uuidMalformed, this.callback);
   	  	},
-  	  'the status code is 400': function(err, res) {
+  	  "the status code is 400": function(err, res) {
                 assert.equal(res.statusCode, 400);
               },
           "the reason phrase is 'Bad Request'": function(err, res) {
@@ -287,7 +287,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentReq_patientIdMissing, this.callback);
   	  	},
-  	  'the status code is 400': function(err, res) {
+  	  "the status code is 400": function(err, res) {
                 assert.equal(res.statusCode, 400);
               },
           "the reason phrase is 'Bad Request'": function(err, res) {
@@ -300,7 +300,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentReq_patientIdEmpty, this.callback);
   	  	},
-  	  'the status code is 400': function(err, res) {
+  	  "the status code is 400": function(err, res) {
                 assert.equal(res.statusCode, 400);
               },
           "the reason phrase is 'Bad Request'": function(err, res) {
@@ -313,7 +313,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentReq_patientIdMalformed, this.callback);
   	  	},
-  	  'the status code is 400': function(err, res) {
+  	  "the status code is 400": function(err, res) {
                 assert.equal(res.statusCode, 400);
               },
           "the reason phrase is 'Bad Request'": function(err, res) {
@@ -326,7 +326,7 @@ vows.describe("Server behaviour").addBatch({
   	  topic: function() {
   	  	get(url.getDocumentReq_uuidNotKnown, this.callback);
   	  	},
-  	  'the status code is 404': function(err, res) {
+  	  "the status code is 404": function(err, res) {
                 assert.equal(res.statusCode, 404);
               },
           "the reason phrase is 'Document Entry UUID not found'": function(err, res) {
