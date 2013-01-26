@@ -13,7 +13,7 @@ exports.getDocumentDossierReq_patientIdMalformed = constants.root + "net.ihe/Doc
 exports.getDocumentDossierReq_patientIdNotKnown = constants.root + "net.ihe/DocumentDossier/" + constants.wellformedDocumentUuid + "/?PatientID=" + constants.unknownPatientId;
 
 exports.findDocumentDossiersReq = constants.root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.wellformedPatientId;
-exports.findDocumentDossiersReq_patientIdMissing = constants.root + "net.ihe/DocumentDossier/search/";
+exports.findDocumentDossiersReq_patientIdMissing = constants.root + "net.ihe/DocumentDossier/search/?";
 exports.findDocumentDossiersReq_patientIdEmpty = constants.root + "net.ihe/DocumentDossier/search/?PatientID=";
 exports.findDocumentDossiersReq_patientIdMalformed = constants.root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.malformedPatientId;
 exports.findDocumentDossiersReq_patientIdNotKnown = constants.root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.unknownPatientId;

@@ -18,7 +18,7 @@ function get(url, cb) {
       cb("error", res); 
     }	  
   )
-  req.on('error', function(e) {
+  req.on("error", function(e) {
     console.error(e);  
   });
   req.end();
