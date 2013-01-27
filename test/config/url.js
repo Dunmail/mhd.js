@@ -12,12 +12,12 @@ exports.getDocumentDossierReq_patientIdEmpty = constants.root + "net.ihe/Documen
 exports.getDocumentDossierReq_patientIdMalformed = constants.root + "net.ihe/DocumentDossier/" + constants.wellformedDocumentUuid + "/?PatientID=" + constants.malformedPatientId;
 exports.getDocumentDossierReq_patientIdNotKnown = constants.root + "net.ihe/DocumentDossier/" + constants.wellformedDocumentUuid + "/?PatientID=" + constants.unknownPatientId;
 
-exports.findDocumentDossiersReq = constants.root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.wellformedPatientId;
-exports.findDocumentDossiersReq_patientIdMissing = constants.root + "net.ihe/DocumentDossier/search/?";
-exports.findDocumentDossiersReq_patientIdEmpty = constants.root + "net.ihe/DocumentDossier/search/?PatientID=";
-exports.findDocumentDossiersReq_patientIdMalformed = constants.root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.malformedPatientId;
-exports.findDocumentDossiersReq_patientIdNotKnown = constants.root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.unknownPatientId;
-exports.findDocumentDossiersReq_patientIdNoDocuments = constants.root + "net.ihe/DocumentDossier/search/?PatientID=" + constants.noDocumentsPatientId;
+exports.findDocumentDossiersReq = constants.root + "net.ihe/DocumentDossier/search?PatientID=" + constants.wellformedPatientId;
+exports.findDocumentDossiersReq_patientIdMissing = constants.root + "net.ihe/DocumentDossier/search";
+exports.findDocumentDossiersReq_patientIdEmpty = constants.root + "net.ihe/DocumentDossier/search?PatientID=";
+exports.findDocumentDossiersReq_patientIdMalformed = constants.root + "net.ihe/DocumentDossier/search?PatientID=" + constants.malformedPatientId;
+exports.findDocumentDossiersReq_patientIdNotKnown = constants.root + "net.ihe/DocumentDossier/search?PatientID=" + constants.unknownPatientId;
+exports.findDocumentDossiersReq_patientIdNoDocuments = constants.root + "net.ihe/DocumentDossier/search?PatientID=" + constants.noDocumentsPatientId;
 
 exports.getDocumentReq = constants.root + "net.ihe/Document/" + constants.wellformedDocumentUuid + "/?PatientID=" + constants.wellformedPatientId;
 exports.getDocumentReq_uuidMissing = constants.root + "net.ihe/Document/?PatientID=" + constants.wellFormedPatientID;

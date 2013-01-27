@@ -10,5 +10,5 @@
     "zombie": "== 1.4.1",
     "q": "== 0.8.x"
   },
-  "license": "MIT"
+  "license": "Apache 2.0"
 }
