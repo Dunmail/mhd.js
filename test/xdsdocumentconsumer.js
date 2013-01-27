@@ -52,7 +52,7 @@ function RetrieveDocumentSet(registryOptions, query, cb){
 }
 
 
-vows.describe("xdsDocumentConsumer functionality").addBatch({
+vows.describe("xdsDocumentConsumer functional tests").addBatch({
   "when searching for ObjectRef by patientId and patient has documents":{
   	  topic: function() {
   	    var query = {

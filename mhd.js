@@ -1,6 +1,6 @@
 var server = require("./lib/server.js");
 var fs = require("fs");
-var xds = require("./test/stub/xdsdocumentconsumer.js");
+var xds = require("./lib/xdsAdapter.js");
 xds.options = {
     registry:"http://192.168.10.65:2010/openxds/services/DocumentRegistry/",
     repository:"http://192.168.10.65:2010/openxds/services/DocumentRepository/"
@@ -13,7 +13,7 @@ var config = {
 	  cert: fs.readFileSync("cert.pem")
 	},
 	xds: xds,
-	patientIdPattern: "^[0-9]{10}$"
+	patientIdPattern: "^[0-9]{9}$" //open XDS patient identifier
   }
 
 server.start(config);

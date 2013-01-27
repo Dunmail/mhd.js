@@ -1,6 +1,6 @@
 var server = require("./lib/server.js");
 var fs = require("fs");
-var xds = require("./test/stub/xdsdocumentconsumer.js"); 
+var xds = require("./test/stub/xdsAdapter.js"); 
 var config = {
 	name: "Mobile access to Health Documents (MHD) service",
 	port: 1337,
@@ -9,7 +9,7 @@ var config = {
 	  cert: fs.readFileSync("cert.pem")
 	},
 	xds: xds,
-	patientIdPattern: "^[0-9]{10}$"
+	patientIdPattern: "^[0-9]{9}$" //open XDS patient identifier
   }
 
 server.start(config);
