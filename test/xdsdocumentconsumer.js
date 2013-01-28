@@ -7,6 +7,8 @@ node mhd.js
 */
 
 var vows = require("vows");
+var check = require("validator").check;
+var sanitize = require("validator").sanitize;
 var assert = require("assert");
 var libxmljs = require("libxmljs");
 var constants = require("./config/constants.js");
@@ -47,48 +49,47 @@ function RetrieveDocumentSet(registryOptions, query, cb){
   });
 }
 
-
 vows.describe("xdsDocumentConsumer functional tests").addBatch({
   "when searching for ObjectRef by patientId and patient has documents":{
   	  topic: function() {
   	    var query = {
   	      returnType: "ObjectRef",
-              params: [{name: "XDSDocumentEntryPatientId", value: constants.wellformedPatientId + "^^^&amp;2.16.840.1.113883.2.1.3.9.1.0.0&amp;ISO"},
+              params: [{name: "XDSDocumentEntryPatientId", value: sanitize(constants.wellformedPatientId).entityEncode()},
                        {name: "XDSDocumentEntryStatus", value: ["urn:oasis:names:tc:ebxml-regrep:StatusType:Approved"]}]
             }
 
   	    RegistryStoredQuery(registryOptions, query, this.callback);
   	  },
   	  'the status code is 200': function(err, res, body) {
-                assert.equal(res.statusCode, 200);
+                check(res.statusCode).is(200);
               },
   	  'the SOAP action is urn:ihe:iti:2007:RegistryStoredQueryResponse': function(err, res, body) {
-                assert.isTrue(res.headers["content-type"].indexOf("action=\"urn:ihe:iti:2007:RegistryStoredQueryResponse\"") > 0);
+                check(res.headers["content-type"]).contains("action=\"urn:ihe:iti:2007:RegistryStoredQueryResponse\"");
               },
           'the body contains at least 1 ObjectRef': function(err, res, body) {
                   var xml = libxmljs.parseXmlString(body);
-                  assert.isTrue(xml.find("//rim:ObjectRef", {"rim":"urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"}).length > 0);
+                  check(xml.find("//rim:ObjectRef", {"rim":"urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"}).length).is(2);
   	      }
             },
   "when searching for ObjectRef by patientId and patient has no documents":{
   	  topic: function() {
   	    var query = {
   	      returnType: "ObjectRef",
-              params: [{name: "XDSDocumentEntryPatientId", value: constants.noDocumentsPatientId + "^^^&amp;2.16.840.1.113883.2.1.3.9.1.0.0&amp;ISO"},
+              params: [{name: "XDSDocumentEntryPatientId", value: sanitize(constants.noDocumentsPatientId).entityEncode()},
                        {name: "XDSDocumentEntryStatus", value: ["urn:oasis:names:tc:ebxml-regrep:StatusType:Approved"]}]
             }
 
   	    RegistryStoredQuery(registryOptions, query, this.callback);
   	  },
   	  'the status code is 200': function(err, res, body) {
-                assert.equal(res.statusCode, 200);
+                check(res.statusCode).is(200);
               },
   	  'the SOAP action is urn:ihe:iti:2007:RegistryStoredQueryResponse': function(err, res, body) {
-                assert.isTrue(res.headers["content-type"].indexOf("action=\"urn:ihe:iti:2007:RegistryStoredQueryResponse\"") > 0);
+                check(res.headers["content-type"]).contains("action=\"urn:ihe:iti:2007:RegistryStoredQueryResponse\"");
               },
           'the body contains no ObjectRef': function(err, res, body) {
                   var xml = libxmljs.parseXmlString(body);
-                  assert.isTrue(xml.find("//rim:ObjectRef", {"rim":"urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"}).length == 0);
+                  check(xml.find("//rim:ObjectRef", {"rim":"urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"}).length).is(0);
   	      }
   }
 }).addBatch({
@@ -96,44 +97,43 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
   	  topic: function() {
   	    var query = {
   	      returnType: "LeafClass",
-              params: [{name: "XDSDocumentEntryPatientId", value: constants.wellformedPatientId + "^^^&amp;2.16.840.1.113883.2.1.3.9.1.0.0&amp;ISO"},
+              params: [{name: "XDSDocumentEntryPatientId", value: sanitize(constants.wellformedPatientId).entityEncode()},
                        {name: "XDSDocumentEntryStatus", value: ["urn:oasis:names:tc:ebxml-regrep:StatusType:Approved"]}]
             }
 
   	    RegistryStoredQuery(registryOptions, query, this.callback);
   	  },
   	  'the status code is 200': function(err, res, body) {
-                assert.equal(res.statusCode, 200);
+                check(res.statusCode).is(200);
               },
   	  'the SOAP action is urn:ihe:iti:2007:RegistryStoredQueryResponse': function(err, res, body) {
-                assert.isTrue(res.headers["content-type"].indexOf("action=\"urn:ihe:iti:2007:RegistryStoredQueryResponse\"") > 0);
+                check(res.headers["content-type"]).contains("action=\"urn:ihe:iti:2007:RegistryStoredQueryResponse\"");
               },
           'the body contains at least 1 ExtrinsicObject': function(err, res, body) {
                 var xml = libxmljs.parseXmlString(body);
                 var objCount = xml.find("//rim:ExtrinsicObject", {"rim":"urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"}).length;
-                if (objCount == 0) { console.log(body); }
-                assert.isTrue(objCount > 0);
+                check(objCount).min(1);
   	      }
             },
   "when searching for LeafClass by patientId and entry does not exist":{
   	  topic: function() {
   	    var query = {
   	      returnType: "LeafClass",
-              params: [{name: "XDSDocumentEntryPatientId", value: constants.noDocumentsPatientId + "^^^&amp;2.16.840.1.113883.2.1.3.9.1.0.0&amp;ISO"},
+              params: [{name: "XDSDocumentEntryPatientId", value: sanitize(constants.noDocumentsPatientId).entityEncode()},
                        {name: "XDSDocumentEntryStatus", value: ["urn:oasis:names:tc:ebxml-regrep:StatusType:Approved"]}]
             }
 
   	    RegistryStoredQuery(registryOptions, query, this.callback);
   	  },
   	  'the status code is 200': function(err, res, body) {
-                assert.equal(res.statusCode, 200);
+                check(res.statusCode).is(200);
               },
   	  'the SOAP action is urn:ihe:iti:2007:RegistryStoredQueryResponse': function(err, res, body) {
-                assert.isTrue(res.headers["content-type"].indexOf("action=\"urn:ihe:iti:2007:RegistryStoredQueryResponse\"") > 0);
+                check(res.headers["content-type"]).contains("action=\"urn:ihe:iti:2007:RegistryStoredQueryResponse\"");
               },
           'the body contains no ExtrinsicObject': function(err, res, body) {
                   var xml = libxmljs.parseXmlString(body);
-                  assert.isTrue(xml.find("//rim:ExtrinsicObject", {"rim":"urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"}).length == 0);
+                  check(xml.find("//rim:ExtrinsicObject", {"rim":"urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"}).length).is(0);
               }
   }
 }).addBatch({
@@ -147,19 +147,19 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
   	    RetrieveDocumentSet(repositoryOptions, query, this.callback);
   	  },
   	  "the status code is 200": function(err, res, parts) {
-                assert.equal(res.statusCode, 200);
+                check(res.statusCode).is(200);
               },
   	  "the SOAP action is urn:ihe:iti:2007:RegistryStoredQueryResponse": function(err, res, body) {
-  	        assert.isTrue(res.headers["content-type"].indexOf("action=\"urn:ihe:iti:2007:RetrieveDocumentSetResponse\"") > 0);
+  	        check(res.headers["content-type"]).contains("action=\"urn:ihe:iti:2007:RetrieveDocumentSetResponse\"");
               },
           "the response contains 2 parts": function(err, res, parts) {
-          	 assert.equal(parts.length, 2);
+          	 check(parts.length).is(2);
             },   
           "the first part is an ebXml success": function(err, res, parts) {
-                 assert.isTrue(parts[0].data.indexOf("urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success") > 0);            	    
+                 check(parts[0].data).contains("urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success");            	    
             },   
           "the second part is a ClinicalDocument ": function(err, res, parts) {
-                 assert.isTrue(parts[1].data.indexOf("<ClinicalDocument") > 0);            	    
+                 check(parts[1].data).contains("<ClinicalDocument");            	    
             },          
   }
 }).run();
