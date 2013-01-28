@@ -23,8 +23,8 @@ function get(url, cb) {
       });
     }	  
   )
-  req.on("error", function(e) {
-    cb(e, null, null);  
+  req.on("error", function(err) {
+    cb(err, null, null);  
   });
   req.end();
 }
@@ -61,8 +61,7 @@ vows.describe("Server behaviour").addBatch({
                 check(res.statusCode).is(200);
               },
           'the body is DocumentDossier[] json': function(err, res, data) {
-          	    var body = JSON.parse(data);
-          	    //TODO
+          	var result = JSON.parse(data);
               }	 	 
           },
   "when findDocumentDossiers url has missing patientId" : {
@@ -97,7 +96,7 @@ vows.describe("Server behaviour").addBatch({
           "the reason phrase is 'Bad Request'": function(err, res, data) {
                   check(data).is("Bad Request");
               }	 	 
-          },
+          }/*,
   "when findDocumentDossiers url has patientId not known to responder" : {
   	  topic: function() {
   	  	get(url.findDocumentDossiersReq_patientIdNotKnown, this.callback);
@@ -108,7 +107,7 @@ vows.describe("Server behaviour").addBatch({
           "the reason phrase is 'No Document Entries found'": function(err, res, data) {
                   check(data).is("No Document Entries found");
               }		 	 
-          },
+          }*/,
   "when findDocumentDossiers url has patientId for patient with no documents" : {
   	  topic: function() {
   	  	get(url.findDocumentDossiersReq_patientIdNoDocuments, this.callback);
@@ -164,7 +163,7 @@ vows.describe("Server behaviour").addBatch({
           "the reason phrase is 'Document Entry UUID not found'": function(err, res, data) {
                   check(data).is("Document Entry UUID not found");
               }	 	 
-          },
+          }/*,
   "when GetDocumentDossier url has uuid for deprecated document" : {
   	  topic: function() {
   	  	get(url.getDocumentDossierReq_uuidDeprecated, this.callback);
@@ -175,7 +174,7 @@ vows.describe("Server behaviour").addBatch({
           "the reason phrase is 'Document Entry UUID deprecated'": function(err, res, data) {
                   check(data).is("Document Entry UUID deprecated");
               }	 	 
-          },
+          }*/,
   "when GetDocumentDossier url has missing patientId" : {
   	  topic: function() {
   	  	get(url.getDocumentDossierReq_patientIdMissing, this.callback);
@@ -208,7 +207,7 @@ vows.describe("Server behaviour").addBatch({
           "the reason phrase is 'Bad Request'": function(err, res, data) {
                   check(data).is("Bad Request");
               }	 	 
-          },
+          }/*,
   "when GetDocumentDossier url has patientId not known to responder" : {
   	  topic: function() {
   	  	get(url.getDocumentDossierReq_patientIdNotKnown, this.callback);
@@ -219,7 +218,7 @@ vows.describe("Server behaviour").addBatch({
           "the reason phrase is 'Document Entry UUID not found'": function(err, res, data) {
                   check(data).is("Document Entry UUID not found");
               }	 	 
-          }
+          }*/
 }).addBatch({
   "when GetDocument url is well-formed" : {
   	  topic: function() {

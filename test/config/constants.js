@@ -1,5 +1,5 @@
 exports.root = "https://localhost:1337/";
-exports.wellformedDocumentUuid = "14a9fdec-0af4-45bb-adf2-d752b49bcc7d";
+exports.wellformedDocumentUuid = "50a0807a-10a0-7c10-6296-71ed0c235b31";
 exports.malformedDocumentUuid = "14a9fdec0af4-45bb-adf2";
 exports.unknownDocumentUuid = "10000000-0000-0000-0000-000000000000";
 exports.deprecatedDocumentUuid = "14a9fdec-0af4-45bb-adf2-d752b4900000";

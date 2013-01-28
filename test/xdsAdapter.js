@@ -1,9 +1,5 @@
 /*
-Server setup to test routing against stub xdsdocumentconsumer
 Requires openxds services prepopulated with documents
-
-node mhd.js
-
 */
 
 var vows = require("vows");
@@ -25,22 +21,24 @@ var repositoryOptions = {
 };
 
 vows.describe("xdsAdapter functional tests").addBatch({
-  "when retrieving dossier":{
+  "when retrieving document dossier":{
   	  topic: function() {
-  	    xds.getDocumentDossier(constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
+  	    xds.getDocumentDossier(registryOptions, constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
   	  },
   	  "there is no error": function(err, dossier){
   	     assert.equal(null, err);
   	  },
   	  "dossier JSON is found": function(err, dossier){
   	     assert.notEqual(null, dossier);
+  	     //console.log(dossier);
   	  }
     }
 }).addBatch({
   "when searching for document dossiers for patient with documents":{
   	  topic: function() {
-  	  	  var query = {};
-  	  	  xds.findDocumentDossiers("http://dummy:888/", constants.wellformedPatientId, query, this.callback);
+  	  	  var query = {
+  	  	  };
+  	  	  xds.findDocumentDossiers(registryOptions, "http://dummy:888/", constants.wellformedPatientId, query, this.callback);
   	  },
   	  "there is no error": function(err, dossier){
   	     assert.equal(null, err);
@@ -53,13 +51,27 @@ vows.describe("xdsAdapter functional tests").addBatch({
   "when searching for document dossiers for patient with no documents":{
   	  topic: function() {
   	  	  var query = {};
-  	  	  xds.findDocumentDossiers("http://dummy:888/", constants.noDocumentsPatientId, query, this.callback);
+  	  	  xds.findDocumentDossiers(registryOptions, "http://dummy:888/", constants.noDocumentsPatientId, query, this.callback);
   	  },
   	  "the error is 'No Document Entries found' ": function(err, dossier){
   	     assert.equal("No Document Entries found", err);
   	  },
   	  "there is no dossier": function(err, dossier){
   	     assert.equal(null, dossier);
+  	  }
+    }
+}).addBatch({
+  "when getting document":{
+  	  topic: function() {
+  	  	  var query = {};
+  	  	  xds.getDocument(repositoryOptions, constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
+  	  },
+  	  "there is no error": function(err, dossier){
+  	     assert.equal(err, null);
+  	  },
+  	  "there is a document": function(err, document){
+  	     assert.notEqual(document, null);
+  	     
   	  }
     }
 }).run();

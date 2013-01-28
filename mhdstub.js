@@ -1,6 +1,17 @@
 var server = require("./lib/server.js");
 var fs = require("fs");
 var xds = require("./test/stub/xdsAdapter.js"); 
+xds["registry"] = {
+		hostname: "192.168.10.99",
+		port: 2010,
+		path: "/openxds/services/DocumentRegistry/"};
+		
+xds["repository"] = {
+		hostname: "192.168.10.99",
+		port: 2010,
+		path: "/openxds/services/DocumentRepository/"
+		}
+ 
 var config = {
 	name: "Mobile access to Health Documents (MHD) service",
 	port: 1337,

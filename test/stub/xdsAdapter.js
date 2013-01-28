@@ -3,7 +3,7 @@ var constants=require("../config/constants.js");
 //NB: In real implementation need to ensure that these functions are non-blocking
 
 //Get Document Dossier [ITI-66]
-function getDocumentDossier(entryUuid, patientId, callback){
+function getDocumentDossier(options, entryUuid, patientId, callback){
 	if (entryUuid == constants.unknownDocumentUuid){
 	  callback("Unknown Document UUID", null);
 	  return;
@@ -60,7 +60,7 @@ function getDocumentDossier(entryUuid, patientId, callback){
 }
 
 //Find Document Dossiers [ITI-67]
-function findDocumentDossiers(originalUrl, patientId, query, callback){
+function findDocumentDossiers(options, originalUrl, patientId, query, callback){
 	if (patientId == constants.unknownPatientId){
 	  callback("Unknown PatientID", null);
 	  return;
@@ -99,7 +99,7 @@ function findDocumentDossiers(originalUrl, patientId, query, callback){
 }
 
 //Get Document [ITI-68]
-function getDocument(entryUuid, patientId, callback){
+function getDocument(options, entryUuid, patientId, callback){
 	if (entryUuid == constants.unknownDocumentUuid){
 	  callback("Unknown Document UUID", null);
 	  return;
@@ -187,10 +187,12 @@ function getDocument(entryUuid, patientId, callback){
 
 	
 	var document = {
-		contentType: "text/xml",
-		contentTransferEncoding: "binary",
-		contentId: "<1.urn:uuid:BA2B74DD7D946FD24E1359170843006@apache.org>",
-		content: content
+	  headers: {
+	    "content-type": "text/xml",
+	    "content-transfer-encoding": "binary",
+	    "content-id": "<1.urn:uuid:BA2B74DD7D946FD24E1359170843006@apache.org>"
+	  },
+	  data: content
 	}
 	
 	callback(null, document);

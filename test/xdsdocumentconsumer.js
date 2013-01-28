@@ -11,6 +11,7 @@ var assert = require("assert");
 var libxmljs = require("libxmljs");
 var constants = require("./config/constants.js");
 var xds = require("../lib/xdsdocumentconsumer.js");
+var parse = require("../lib/parseHttp.js");
 
 var registryOptions = {
   hostname: "192.168.10.65",
@@ -40,14 +41,9 @@ var repositoryOptions = {
 
 function RetrieveDocumentSet(registryOptions, query, cb){
   xds.RetrieveDocumentSet(registryOptions, query, function(err, res) {
-    res.setEncoding("UTF-8");
-    var body = "";
-    res.on("data", function (chunk) {	       
-      body = body + chunk.toString();
-    });
-    res.on("end", function() {
-      cb(err, res, body);
-    });
+      parse.splitMultipart(res, function(parts){
+          cb(err, res, parts);
+      });
   });
 }
 
@@ -141,7 +137,7 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
               }
   }
 }).addBatch({
-  "when fetching document":{
+  "when fetching a document":{
   	  topic: function() {
             var query = {
               RepositoryUniqueId: "2.16.840.1.113883.2.1.3.9.1.2.0",
@@ -150,57 +146,22 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
 
   	    RetrieveDocumentSet(repositoryOptions, query, this.callback);
   	  },
-  	  "the status code is 200": function(err, res, body) {
+  	  "the status code is 200": function(err, res, parts) {
                 assert.equal(res.statusCode, 200);
               },
   	  "the SOAP action is urn:ihe:iti:2007:RegistryStoredQueryResponse": function(err, res, body) {
   	        assert.isTrue(res.headers["content-type"].indexOf("action=\"urn:ihe:iti:2007:RetrieveDocumentSetResponse\"") > 0);
               },
-          "the body": function(err, res, body) {
-                 var mimeBoundary = getMimeBoundary(res);
-                 var parts = body.split(mimeBoundary);
-  	         //assert.equal(parts.length, 4);
-                 //assert.isTrue(parts[2].indexOf("urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success") > 0);            	    
+          "the response contains 2 parts": function(err, res, parts) {
+          	 assert.equal(parts.length, 2);
             },   
-         }
+          "the first part is an ebXml success": function(err, res, parts) {
+                 assert.isTrue(parts[0].data.indexOf("urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success") > 0);            	    
+            },   
+          "the second part is a ClinicalDocument ": function(err, res, parts) {
+                 assert.isTrue(parts[1].data.indexOf("<ClinicalDocument") > 0);            	    
+            },          
+  }
 }).run();
 
-function mimePartIsNotLast(data){
-  return data != "--";
-}
-
-function mimePartIsNotEmpty(data){
-  return data.length > 0;
-}
-
-function getMimeBoundary(res){
-  var mimeBoundary = "";
-  var token = res.headers["content-type"].split(";");
-  for (var i = 0; i < token.length; i++) {
-  	  if (token[i].indexOf("boundary=") >= 0){
-  	    var kvp = token[i].split("=");
-  	    key = kvp[0].trim();
-  	    value = kvp[1].trim();
-  	    mimeBoundary = "--" + value;
-          } 
-  }	  
-  return mimeBoundary;
-}
-/*
-function onPart(data){
-  if (data.contains("urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success"){
-    console.log("Found a document!");		  
-  }
-  
-  if (data.contains()){
-    console.log(data);	  	  
-  } 
-
-  console.log("");
-}
-
-function onEnd(){
-	
-}
-*/
 
