@@ -54,7 +54,7 @@ function getDocumentDossier(options, entryUuid, patientId, callback){
 	sourcePatientId:'4567856789^^^&3.4.5&ISO',
 	mimeType:'text/xml',
 	uniqueId:'1.2009.0827.08.33.5074',
-	entryUUID:'urn:uuid:' + entryUuid}};
+	entryUUID: entryUuid}};
 	
 	callback(null, JSON.stringify(dossier));
 }
@@ -115,76 +115,77 @@ function getDocument(options, entryUuid, patientId, callback){
 	  return;
 	}
 	
-	var content = "<?xml version='1.0' encoding='UTF-8'?>";
-        var content = content + "<ClinicalDocument xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='urn:hl7-org:v3'>";
-        var content = content + "<typeId extension='POCD_HD000040' root='2.16.840.1.113883.1.3'/>";
-        var content = content + "<templateId root='2.16.840.1.113883.2.1.3.9.10.0.0'/>";
-        var content = content + "<id extension='742318311954' root='2.16.840.1.113883.2.1.3.9'/>";
-        var content = content + "<code code='57027-5' codeSystem='2.16.840.1.113883.6.1' codeSystemName='LOINC' displayName='Measure Observations'/>";
-        var content = content + "<title>Measure Observations</title>";
-        var content = content + "<effectiveTime value='20080506143021+0100'/>";
-        var content = content + "<confidentialityCode code='N' codeSystem='2.16.840.1.113883.5.25' codeSystemName='HL7' displayName='Normal'/>";
-        var content = content + "<languageCode code='en-UK'/>";
-        var content = content + "<recordTarget>";
-        var content = content + "<patientRole>";
-        var content = content + "<id extension='223568611' root='2.16.840.1.113883.2.1.3.9.1.0.0'/>";
-        var content = content + "<addr><streetName>60 Hounslow Rd</streetName><city>SMYTHE'S GREEN</city><postalCode>CO5 1VO</postalCode></addr>";
-        var content = content + "<patient>";
-        var content = content + "<name><family>OWEN</family><given>OLIVER</given></name>";
-        var content = content + "<administrativeGenderCode code='M' codeSystem='2.16.840.1.113883.5.1'/>";
-        var content = content + "<birthTime value='19331210'/>";
-        var content = content + "</patient>";
-        var content = content + "</patientRole>";
-        var content = content + "</recordTarget>";
-        var content = content + "<author>";
-        var content = content + "<time value='20080506143021+0100'/>";
-        var content = content + "<assignedAuthor>";
-        var content = content + "<id extension='593978059683' root='2.16.840.1.113883.2.1.3.9.1.0.0'/>";
-        var content = content + "<assignedPerson>";
-        var content = content + "<name><family>HOOK</family><given>JAMES</given></name>";
-        var content = content + "</assignedPerson>";
-        var content = content + "<representedOrganization>";
-        var content = content + "<id root='2.16.840.1.113883.2.1.3.9.19.5'/>";
-        var content = content + "<name>Good Health Clinic</name>";
-        var content = content + "</representedOrganization>";
-        var content = content + "</assignedAuthor>";
-        var content = content + "</author>";
-        var content = content + "<custodian>";
-        var content = content + "<assignedCustodian>";
-        var content = content + "<representedCustodianOrganization>";
-        var content = content + "<id root='2.16.840.1.113883.2.1.3.9.1.1.1.2.0'/>";
-        var content = content + "<name>Sintero XDS</name>";
-        var content = content + "</representedCustodianOrganization>";
-        var content = content + "</assignedCustodian>";
-        var content = content + "</custodian>";
-        var content = content + "<documentationOf>";
-        var content = content + "<serviceEvent classCode='MPROT'>";
-        var content = content + "<effectiveTime>";
-        var content = content + "<low value='20080506141821'/>";
-        var content = content + "<high value='20080506144221+0100'/>";
-        var content = content + "</effectiveTime>";
-        var content = content + "</serviceEvent>";
-        var content = content + "</documentationOf>";
-        var content = content + "<component>";
-        var content = content + "<structuredBody>";
-        var content = content + "<component>";
-        var content = content + "<section>";
-        var content = content + "<templateId root='2.16.840.1.113883.2.1.3.9.10.1.1'/>";
-        var content = content + "<code code='2276-4' codeSystem='2.16.840.1.113883.6.1' codeSystemName='LOINC' displayName='Ferritin'/>";
-        var content = content + "<text>06-May-2008 13:30:21 GMT+01:00 Ferritin: 622.0 ug/L</text>";
-        var content = content + "<entry>";
-        var content = content + "<observation classCode='OBS' moodCode='EVN'>";
-        var content = content + "<code code='2276-4' codeSystem='2.16.840.1.113883.6.1' codeSystemName='LOINC' displayName='Ferritin'/>";
-        var content = content + "<effectiveTime value='20080506141821'/>";
-        var content = content + "<value xsi:type='PQ' unit='ug/L' value='622.0'/>";
-        var content = content + "</observation>";
-        var content = content + "</entry>";
-        var content = content + "</section>";
-        var content = content + "</component>";
-        var content = content + "</structuredBody>";
-        var content = content + "</component>";
-        var content = content + "</ClinicalDocument>";
-
+	var tmp = [];
+	tmp.push("<?xml version='1.0' encoding='UTF-8'?>");
+        tmp.push("<ClinicalDocument xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='urn:hl7-org:v3'>");
+        tmp.push("<typeId extension='POCD_HD000040' root='2.16.840.1.113883.1.3'/>");
+        tmp.push("<templateId root='2.16.840.1.113883.2.1.3.9.10.0.0'/>");
+        tmp.push("<id extension='742318311954' root='2.16.840.1.113883.2.1.3.9'/>");
+        tmp.push("<code code='57027-5' codeSystem='2.16.840.1.113883.6.1' codeSystemName='LOINC' displayName='Measure Observations'/>");
+        tmp.push("<title>Measure Observations</title>");
+        tmp.push("<effectiveTime value='20080506143021+0100'/>");
+        tmp.push("<confidentialityCode code='N' codeSystem='2.16.840.1.113883.5.25' codeSystemName='HL7' displayName='Normal'/>");
+        tmp.push("<languageCode code='en-UK'/>");
+        tmp.push("<recordTarget>");
+        tmp.push("<patientRole>");
+        tmp.push("<id extension='223568611' root='2.16.840.1.113883.2.1.3.9.1.0.0'/>");
+        tmp.push("<addr><streetName>60 Hounslow Rd</streetName><city>SMYTHE'S GREEN</city><postalCode>CO5 1VO</postalCode></addr>");
+        tmp.push("<patient>");
+        tmp.push("<name><family>OWEN</family><given>OLIVER</given></name>");
+        tmp.push("<administrativeGenderCode code='M' codeSystem='2.16.840.1.113883.5.1'/>");
+        tmp.push("<birthTime value='19331210'/>");
+        tmp.push("</patient>");
+        tmp.push("</patientRole>");
+        tmp.push("</recordTarget>");
+        tmp.push("<author>");
+        tmp.push("<time value='20080506143021+0100'/>");
+        tmp.push("<assignedAuthor>");
+        tmp.push("<id extension='593978059683' root='2.16.840.1.113883.2.1.3.9.1.0.0'/>");
+        tmp.push("<assignedPerson>");
+        tmp.push("<name><family>HOOK</family><given>JAMES</given></name>");
+        tmp.push("</assignedPerson>");
+        tmp.push("<representedOrganization>");
+        tmp.push("<id root='2.16.840.1.113883.2.1.3.9.19.5'/>");
+        tmp.push("<name>Good Health Clinic</name>");
+        tmp.push("</representedOrganization>");
+        tmp.push("</assignedAuthor>");
+        tmp.push("</author>");
+        tmp.push("<custodian>");
+        tmp.push("<assignedCustodian>");
+        tmp.push("<representedCustodianOrganization>");
+        tmp.push("<id root='2.16.840.1.113883.2.1.3.9.1.1.1.2.0'/>");
+        tmp.push("<name>Sintero XDS</name>");
+        tmp.push("</representedCustodianOrganization>");
+        tmp.push("</assignedCustodian>");
+        tmp.push("</custodian>");
+        tmp.push("<documentationOf>");
+        tmp.push("<serviceEvent classCode='MPROT'>");
+        tmp.push("<effectiveTime>");
+        tmp.push("<low value='20080506141821'/>");
+        tmp.push("<high value='20080506144221+0100'/>");
+        tmp.push("</effectiveTime>");
+        tmp.push("</serviceEvent>");
+        tmp.push("</documentationOf>");
+        tmp.push("<component>");
+        tmp.push("<structuredBody>");
+        tmp.push("<component>");
+        tmp.push("<section>");
+        tmp.push("<templateId root='2.16.840.1.113883.2.1.3.9.10.1.1'/>");
+        tmp.push("<code code='2276-4' codeSystem='2.16.840.1.113883.6.1' codeSystemName='LOINC' displayName='Ferritin'/>");
+        tmp.push("<text>06-May-2008 13:30:21 GMT+01:00 Ferritin: 622.0 ug/L</text>");
+        tmp.push("<entry>");
+        tmp.push("<observation classCode='OBS' moodCode='EVN'>");
+        tmp.push("<code code='2276-4' codeSystem='2.16.840.1.113883.6.1' codeSystemName='LOINC' displayName='Ferritin'/>");
+        tmp.push("<effectiveTime value='20080506141821'/>");
+        tmp.push("<value xsi:type='PQ' unit='ug/L' value='622.0'/>");
+        tmp.push("</observation>");
+        tmp.push("</entry>");
+        tmp.push("</section>");
+        tmp.push("</component>");
+        tmp.push("</structuredBody>");
+        tmp.push("</component>");
+        tmp.push("</ClinicalDocument>");
+        var data = tmp.join("");
 	
 	var document = {
 	  headers: {
@@ -192,7 +193,7 @@ function getDocument(options, entryUuid, patientId, callback){
 	    "content-transfer-encoding": "binary",
 	    "content-id": "<1.urn:uuid:BA2B74DD7D946FD24E1359170843006@apache.org>"
 	  },
-	  data: content
+	  data: data
 	}
 	
 	callback(null, document);
