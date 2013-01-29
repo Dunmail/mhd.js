@@ -61,7 +61,7 @@ vows.describe("xdsAdapter functional tests").addBatch({
     }).addBatch({
         "when getting document":{
             topic:function () {
-                xds.getDocument(xds.repository, constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
+                xds.getDocument(xds.registry, xds.repository, constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
             },
             "there is no error":function (err, document) {
                 check(err).isNull();
