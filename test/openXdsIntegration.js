@@ -1,8 +1,6 @@
 /*
  Server setup to test routing against xdsdocumentconsumer
-
  node mhd.js
-
  */
 
 var https = require("https");
@@ -10,29 +8,61 @@ var vows = require("vows");
 var check = require("validator").check;
 var constants = require("./config/constants.js");
 var url = require("./config/url.js");
+var urlParser = require("url");
+var base64 = require('b64');
 
-function get(url, cb) {
-    var req = https.get(url, function (res) {
-            res.setEncoding("UTF-8");
-            var data = "";
-            res.on("data", function (chunk) {
-                data += chunk.toString();
-            });
-            res.on("end", function () {
-                cb(null, res, data);
-            });
-        }
-    )
-    req.on("error", function (err) {
-        cb(err, null, null);
+var user = constants.goodUser;
+var pass = constants.goodPass;
+var badUser = constants.badUser;
+var badPass = constants.badPass;
+
+function encodeHttpBasicAuthorizationHeader(user, pass) {
+    return "Basic " + base64.encode(user + ":" + pass);
+}
+
+function getWithoutAuthorization(url, callback) {
+    var options = urlParser.parse(url);
+    var req = https.request(options, function (res) {
+        res.setEncoding("UTF-8");
+        var data = "";
+        res.on("data", function (chunk) {
+            data += chunk.toString();
+        });
+        res.on("end", function () {
+            callback(null, res, data);
+        });
+    });
+    req.on("error", function (e) {
+        callback(e, null, null);
     });
     req.end();
 }
 
-vows.describe("Server behaviour").addBatch({
+function get(url, user, pass, callback) {
+    var options = urlParser.parse(url);
+    options["headers"] = {
+        Authorization:encodeHttpBasicAuthorizationHeader(user, pass)
+    };
+    var req = https.request(options, function (res) {
+        res.setEncoding("UTF-8");
+        var data = "";
+        res.on("data", function (chunk) {
+            data += chunk.toString();
+        });
+        res.on("end", function () {
+            callback(null, res, data);
+        });
+    });
+    req.on("error", function (e) {
+        callback(e, null, null);
+    });
+    req.end();
+}
+
+vows.describe("With server integrated with OpenXDS").addBatch({
     "when browsing root url":{
         topic:function () {
-            get(constants.root, this.callback);
+            get(constants.root, user, pass, this.callback);
         },
         'the status code is 403':function (err, res, data) {
             check(res.statusCode).is(403);
@@ -43,7 +73,7 @@ vows.describe("Server behaviour").addBatch({
     },
     "when browsing unknown url":{
         topic:function () {
-            get(url.unknown, this.callback);
+            get(url.unknown, user, pass, this.callback);
         },
         'the status code is 403':function (err, res, data) {
             check(res.statusCode).is(403);
@@ -53,9 +83,55 @@ vows.describe("Server behaviour").addBatch({
         }
     }
 }).addBatch({
+        "when url is well-formed but no Authorization header supplied":{
+            topic:function () {
+                getWithoutAuthorization(url.findDocumentDossiersReq, this.callback);
+            },
+            'the status code is 401':function (err, res, data) {
+                check(res.statusCode).is(401);
+            },
+            'the body is DocumentDossier[] json':function (err, res, data) {
+                check(data).is("Unauthorized");
+            }
+        },
+        "when url is well-formed but invalid user supplied":{
+            topic:function () {
+                get(url.findDocumentDossiersReq, badUser, pass, this.callback);
+            },
+            'the status code is 401':function (err, res, data) {
+                check(res.statusCode).is(401);
+            },
+            'the body is DocumentDossier[] json':function (err, res, data) {
+                check(data).is("Unauthorized");
+            }
+        },
+        "when url is well-formed but invalid pass supplied":{
+            topic:function () {
+                get(url.findDocumentDossiersReq, user, badPass, this.callback);
+            },
+            'the status code is 401':function (err, res, data) {
+                check(res.statusCode).is(401);
+            },
+            'the body is DocumentDossier[] json':function (err, res, data) {
+                check(data).is("Unauthorized");
+            }
+        },
+        "when url is well-formed and valid user/pass supplied":{
+            topic:function () {
+                get(url.findDocumentDossiersReq, user, pass, this.callback);
+            },
+            'the status code is 200':function (err, res, data) {
+                check(res.statusCode).is(200);
+            },
+            'the body is DocumentDossier[] json':function (err, res, data) {
+                var body = JSON.parse(data);
+                //TODO
+            }
+        }
+}).addBatch({
         "when findDocumentDossiers url is well-formed":{
             topic:function () {
-                get(url.findDocumentDossiersReq, this.callback);
+                get(url.findDocumentDossiersReq, user, pass, this.callback);
             },
             'the status code is 200':function (err, res, data) {
                 check(res.statusCode).is(200);
@@ -66,7 +142,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when findDocumentDossiers url has missing patientId":{
             topic:function () {
-                get(url.findDocumentDossiersReq_patientIdMissing, this.callback);
+                get(url.findDocumentDossiersReq_patientIdMissing, user, pass, this.callback);
             },
             'the status code is 400':function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -77,7 +153,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when findDocumentDossiers url has empty patientId":{
             topic:function () {
-                get(url.findDocumentDossiersReq_patientIdEmpty, this.callback);
+                get(url.findDocumentDossiersReq_patientIdEmpty, user, pass, this.callback);
             },
             'the status code is 400':function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -88,7 +164,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when findDocumentDossiers url has malformed patientId":{
             topic:function () {
-                get(url.findDocumentDossiersReq_patientIdMalformed, this.callback);
+                get(url.findDocumentDossiersReq_patientIdMalformed, user, pass, this.callback);
             },
             "the status code is 400":function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -99,7 +175,7 @@ vows.describe("Server behaviour").addBatch({
         }/*,
          "when findDocumentDossiers url has patientId not known to responder" : {
          topic: function() {
-         get(url.findDocumentDossiersReq_patientIdNotKnown, this.callback);
+         get(url.findDocumentDossiersReq_patientIdNotKnown, user, pass, this.callback);
          },
          "the status code is 404": function(err, res, data) {
          check(res.statusCode).is(404);
@@ -110,7 +186,7 @@ vows.describe("Server behaviour").addBatch({
          }*/,
         "when findDocumentDossiers url has patientId for patient with no documents":{
             topic:function () {
-                get(url.findDocumentDossiersReq_patientIdNoDocuments, this.callback);
+                get(url.findDocumentDossiersReq_patientIdNoDocuments, user, pass, this.callback);
             },
             "the status code is 404":function (err, res, data) {
                 check(res.statusCode).is(404);
@@ -122,7 +198,7 @@ vows.describe("Server behaviour").addBatch({
     }).addBatch({
         "when GetDocumentDossier url is well-formed":{
             topic:function () {
-                get(url.getDocumentDossierReq, this.callback);
+                get(url.getDocumentDossierReq, user, pass, this.callback);
             },
             "the status code is 200":function (err, res, data) {
                 check(res.statusCode).is(200);
@@ -133,7 +209,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when GetDocumentDossier url has missing uuid":{
             topic:function () {
-                get(url.getDocumentDossierReq_uuidMissing, this.callback);
+                get(url.getDocumentDossierReq_uuidMissing, user, pass, this.callback);
             },
             "the status code is 400":function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -144,7 +220,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when GetDocumentDossier url has malformed uuid":{
             topic:function () {
-                get(url.getDocumentDossierReq_uuidMalformed, this.callback);
+                get(url.getDocumentDossierReq_uuidMalformed, user, pass, this.callback);
             },
             "the status code is 400":function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -155,7 +231,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when GetDocumentDossier url has uuid not known to responder":{
             topic:function () {
-                get(url.getDocumentDossierReq_uuidNotKnown, this.callback);
+                get(url.getDocumentDossierReq_uuidNotKnown, user, pass, this.callback);
             },
             "the status code is 404":function (err, res, data) {
                 check(res.statusCode).is(404);
@@ -166,7 +242,7 @@ vows.describe("Server behaviour").addBatch({
         }/*,
          "when GetDocumentDossier url has uuid for deprecated document" : {
          topic: function() {
-         get(url.getDocumentDossierReq_uuidDeprecated, this.callback);
+         get(url.getDocumentDossierReq_uuidDeprecated, user, pass, this.callback);
          },
          "the status code is 410": function(err, res, data) {
          check(res.statusCode).is(410);
@@ -177,7 +253,7 @@ vows.describe("Server behaviour").addBatch({
          }*/,
         "when GetDocumentDossier url has missing patientId":{
             topic:function () {
-                get(url.getDocumentDossierReq_patientIdMissing, this.callback);
+                get(url.getDocumentDossierReq_patientIdMissing, user, pass, this.callback);
             },
             "the status code is 400":function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -188,7 +264,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when GetDocumentDossier url has empty patientId":{
             topic:function () {
-                get(url.getDocumentDossierReq_patientIdEmpty, this.callback);
+                get(url.getDocumentDossierReq_patientIdEmpty, user, pass, this.callback);
             },
             "the status code is 400":function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -199,7 +275,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when GetDocumentDossier url has malformed patientId":{
             topic:function () {
-                get(url.getDocumentDossierReq_patientIdMalformed, this.callback);
+                get(url.getDocumentDossierReq_patientIdMalformed, user, pass, this.callback);
             },
             "the status code is 400":function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -210,7 +286,7 @@ vows.describe("Server behaviour").addBatch({
         }/*,
          "when GetDocumentDossier url has patientId not known to responder" : {
          topic: function() {
-         get(url.getDocumentDossierReq_patientIdNotKnown, this.callback);
+         get(url.getDocumentDossierReq_patientIdNotKnown, user, pass, this.callback);
          },
          "the status code is 404": function(err, res, data) {
          check(res.statusCode).is(404);
@@ -222,7 +298,7 @@ vows.describe("Server behaviour").addBatch({
     }).addBatch({
         "when GetDocument url is well-formed":{
             topic:function () {
-                get(url.getDocumentReq, this.callback);
+                get(url.getDocumentReq, user, pass, this.callback);
             },
             "the status code is 200":function (err, res, data) {
                 check(res.statusCode).is(200);
@@ -230,7 +306,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when GetDocument url has missing uuid":{
             topic:function () {
-                get(url.getDocumentReq_uuidMissing, this.callback);
+                get(url.getDocumentReq_uuidMissing, user, pass, this.callback);
             },
             "the status code is 400":function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -241,7 +317,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when GetDocument url has malformed uuid":{
             topic:function () {
-                get(url.getDocumentReq_uuidMalformed, this.callback);
+                get(url.getDocumentReq_uuidMalformed, user, pass, this.callback);
             },
             "the status code is 400":function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -252,7 +328,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when GetDocument url has missing patientId":{
             topic:function () {
-                get(url.getDocumentReq_patientIdMissing, this.callback);
+                get(url.getDocumentReq_patientIdMissing, user, pass, this.callback);
             },
             "the status code is 400":function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -263,7 +339,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when GetDocument url has empty patientId":{
             topic:function () {
-                get(url.getDocumentReq_patientIdEmpty, this.callback);
+                get(url.getDocumentReq_patientIdEmpty, user, pass, this.callback);
             },
             "the status code is 400":function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -274,7 +350,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when GetDocument url has malformed patientId":{
             topic:function () {
-                get(url.getDocumentReq_patientIdMalformed, this.callback);
+                get(url.getDocumentReq_patientIdMalformed, user, pass, this.callback);
             },
             "the status code is 400":function (err, res, data) {
                 check(res.statusCode).is(400);
@@ -285,7 +361,7 @@ vows.describe("Server behaviour").addBatch({
         },
         "when GetDocument url has uuid not known to responder":{
             topic:function () {
-                get(url.getDocumentReq_uuidNotKnown, this.callback);
+                get(url.getDocumentReq_uuidNotKnown, user, pass, this.callback);
             },
             "the status code is 404":function (err, res, data) {
                 check(res.statusCode).is(404);
