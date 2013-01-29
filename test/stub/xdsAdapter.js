@@ -99,7 +99,7 @@ function findDocumentDossiers(options, originalUrl, patientId, query, callback){
 }
 
 //Get Document [ITI-68]
-function getDocument(options, entryUuid, patientId, callback){
+function getDocument(registryOptions, repositoryOptions, entryUuid, patientId, callback){
 	if (entryUuid == constants.unknownDocumentUuid){
 	  callback("Unknown Document UUID", null);
 	  return;
