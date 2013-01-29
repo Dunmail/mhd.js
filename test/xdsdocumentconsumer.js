@@ -21,7 +21,7 @@ var registryOptions = {
   path: "/openxds/services/DocumentRegistry/"
 };
 
-function RegistryStoredQuery(registryOptions, query, cb){
+function RegistryStoredQuery(registryOptions, query, callback){
   xds.RegistryStoredQuery(registryOptions, query, function(err, res) {
     res.setEncoding("UTF-8");
     var body = "";
@@ -29,7 +29,7 @@ function RegistryStoredQuery(registryOptions, query, cb){
       body = body + chunk.toString();
     });
     res.on("end", function() {
-      cb(err, res, body);
+      callback(err, res, body);
     });
   });
 }
@@ -53,10 +53,12 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
   "when searching for ObjectRef by patientId and patient has documents":{
   	  topic: function() {
   	    var query = {
-  	      returnType: "ObjectRef",
-              params: [{name: "XDSDocumentEntryPatientId", value: sanitize(constants.wellformedPatientId).entityEncode()},
-                       {name: "XDSDocumentEntryStatus", value: ["urn:oasis:names:tc:ebxml-regrep:StatusType:Approved"]}]
-            }
+              returnType:"ObjectRef",
+              params:[
+                  {name:"XDSDocumentEntryPatientId", value:sanitize(constants.wellformedPatientId).entityEncode()},
+                  {name:"XDSDocumentEntryStatus", value:["urn:oasis:names:tc:ebxml-regrep:StatusType:Approved"]}
+              ]
+          };
 
   	    RegistryStoredQuery(registryOptions, query, this.callback);
   	  },
@@ -77,7 +79,7 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
   	      returnType: "ObjectRef",
               params: [{name: "XDSDocumentEntryPatientId", value: sanitize(constants.noDocumentsPatientId).entityEncode()},
                        {name: "XDSDocumentEntryStatus", value: ["urn:oasis:names:tc:ebxml-regrep:StatusType:Approved"]}]
-            }
+            };
 
   	    RegistryStoredQuery(registryOptions, query, this.callback);
   	  },
@@ -99,7 +101,7 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
   	      returnType: "LeafClass",
               params: [{name: "XDSDocumentEntryPatientId", value: sanitize(constants.wellformedPatientId).entityEncode()},
                        {name: "XDSDocumentEntryStatus", value: ["urn:oasis:names:tc:ebxml-regrep:StatusType:Approved"]}]
-            }
+            };
 
   	    RegistryStoredQuery(registryOptions, query, this.callback);
   	  },
@@ -121,7 +123,7 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
   	      returnType: "LeafClass",
               params: [{name: "XDSDocumentEntryPatientId", value: sanitize(constants.noDocumentsPatientId).entityEncode()},
                        {name: "XDSDocumentEntryStatus", value: ["urn:oasis:names:tc:ebxml-regrep:StatusType:Approved"]}]
-            }
+            };
 
   	    RegistryStoredQuery(registryOptions, query, this.callback);
   	  },
@@ -142,7 +144,7 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
             var query = {
               RepositoryUniqueId: "2.16.840.1.113883.2.1.3.9.1.2.0",
               DocumentUniqueId: "2.16.840.1.113883.2.1.3.9.105035065001189118.1358955547866.1"
-            }
+            };
 
   	    RetrieveDocumentSet(repositoryOptions, query, this.callback);
   	  },
@@ -160,7 +162,7 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
             },   
           "the second part is a ClinicalDocument ": function(err, res, parts) {
                  check(parts[1].data).contains("<ClinicalDocument");            	    
-            },          
+            }
   }
 }).run();
 
