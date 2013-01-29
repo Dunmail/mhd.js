@@ -7,4 +7,8 @@ exports.wellformedPatientId = "223568611^^^&2.16.840.1.113883.2.1.3.9.1.0.0&ISO"
 exports.malformedPatientId = "4567856789^^^&2.16.840.1.113883.2.1.3.9.1.0.0&ISO";
 exports.unknownPatientId = "223568000^^^&2.16.840.1.113883.2.1.3.9.1.0.0&ISO";
 exports.noDocumentsPatientId = "223568612^^^&2.16.840.1.113883.2.1.3.9.1.0.0&ISO";
+exports.goodUser="Aladdin";
+exports.goodPass = "open sesame";
+exports.badUser="Sorcerer";
+exports.badPass = "keep me out";
 
