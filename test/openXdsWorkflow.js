@@ -9,10 +9,22 @@ var https = require("https");
 var vows = require("vows");
 var check = require("validator").check;
 var constants = require("./config/constants.js");
-var url = require("./config/url.js");
+var urlParser = require("url");
+var base64 = require('b64');
+
+var user = constants.goodUser;
+var pass = constants.goodPass;
+
+function encodeHttpBasicAuthorizationHeader(user, pass) {
+    return "Basic " + base64.encode(user + ":" + pass);
+}
 
 function get(url, callback) {
-    var req = https.get(url, function (res) {
+    var options = urlParser.parse(url);
+    options["headers"] = {
+        Authorization:encodeHttpBasicAuthorizationHeader(user, pass)
+    };
+    var req = https.request(options, function (res) {
         res.setEncoding("UTF-8");
         var data = "";
         res.on("data", function (chunk) {
@@ -22,8 +34,8 @@ function get(url, callback) {
             callback(null, res, data);
         });
     });
-    req.on("error", function (err) {
-        callback(err, null, null);
+    req.on("error", function (e) {
+        callback(e, null, null);
     });
     req.end();
 }
