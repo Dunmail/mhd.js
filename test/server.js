@@ -130,7 +130,7 @@ vows.describe("Server behaviour").addBatch({
                 check(res.statusCode).is(200);
             },
             'the body is DocumentDossier[] atom':function (err, res, data) {
-                var body = JSON.parse(data);
+                check(data).notNull();
                 //TODO
             }
         },
