@@ -1,5 +1,5 @@
 /*
- Requires openxds services prepopulated with documents
+Requires openxds services prepopulated with documents
  */
 var vows = require("vows");
 var check = require("validator").check;
@@ -7,16 +7,8 @@ var libxmljs = require("libxmljs");
 var constants = require("./config/constants.js");
 
 var xds = require("../lib/xdsAdapter.js");
-xds["registry"] = {
-    hostname:"192.168.10.65",
-    port:2010,
-    path:"/openxds/services/DocumentRegistry/"};
-
-xds["repository"] = {
-    hostname:"192.168.10.65",
-    port:2010,
-    path:"/openxds/services/DocumentRepository/"
-};
+xds["registry"] = constants.xdsRegistry;
+xds["repository"] = constants.xdsRepository;
 
 vows.describe("xdsAdapter functional tests").addBatch({
     "when retrieving document dossier":{

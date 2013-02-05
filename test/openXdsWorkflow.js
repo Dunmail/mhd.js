@@ -1,8 +1,7 @@
 /*
- Server setup to test routing against stub xdsdocumentconsumer
+Demonstrates functionality vs openxds services
 
- node mhdstub.js
-
+Server setup: node mhd.js
  */
 
 var https = require("https");
@@ -50,14 +49,6 @@ console.log("PatientID: " + patientId + " NB: ^, & characters escaped and ID aut
 var apiUrl = "https://127.0.0.1:1337/net.ihe/DocumentDossier/search?PatientID=" + patientId;
 console.log("Url: " + apiUrl);
 console.log("");
-
-/*
-var badUrl = "https://localhost:1337/net.ihe/DocumentDossier/urn:uuid:53186124-b316-7cb0-a57a-2a2ff4baa170/?PatientID=223568611%5E%5E%5E%262.16.840.1.113883.2.1.3.9.1.0.0%26ISO";
-get(badUrl, function (err, res, data) {
-    check(err).isNull();
-    check(res.statusCode).is(200);
-}   );
-  */
 
 get(apiUrl, function (err, res, data) {
     check(err).isNull();
