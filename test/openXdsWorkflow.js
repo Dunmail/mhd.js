@@ -47,7 +47,7 @@ var patientId = "223568611%5E%5E%5E%262.16.840.1.113883.2.1.3.9.1.0.0%26ISO";
 console.log("Find document dossiers for patient");
 console.log("PatientID: " + patientId + " NB: ^, & characters escaped and ID authority included");
 
-var apiUrl = "https://localhost:1337/net.ihe/DocumentDossier/search?PatientID=" + patientId;
+var apiUrl = "https://127.0.0.1:1337/net.ihe/DocumentDossier/search?PatientID=" + patientId;
 console.log("Url: " + apiUrl);
 console.log("");
 
