@@ -3,7 +3,6 @@
  */
 var vows = require("vows");
 var check = require("validator").check;
-var assert = require("assert");
 var libxmljs = require("libxmljs");
 var constants = require("./config/constants.js");
 
@@ -34,9 +33,12 @@ vows.describe("xdsAdapter functional tests").addBatch({
 }).addBatch({
         "when searching for document dossiers for patient with documents":{
             topic:function () {
-                var query = {
+                var params = {
+                    registry:xds.registry,
+                    originalUrl:"http://dummy:888/",
+                    query:{ PatientID:constants.wellformedPatientId}
                 };
-                xds.findDocumentDossiers(xds.registry, "http://dummy:888/", constants.wellformedPatientId, query, this.callback);
+                xds.findDocumentDossiers(params, this.callback);
             },
             "there is no error":function (err, results) {
                 check(err).isNull();
@@ -48,8 +50,12 @@ vows.describe("xdsAdapter functional tests").addBatch({
     }).addBatch({
         "when searching for document dossiers for patient with no documents":{
             topic:function () {
-                var query = {};
-                xds.findDocumentDossiers(xds.registry, "http://dummy:888/", constants.noDocumentsPatientId, query, this.callback);
+                var params = {
+                    registry:xds.registry,
+                    originalUrl:"http://dummy:888/",
+                    query:{ PatientID:constants.noDocumentsPatientId}
+                };
+                xds.findDocumentDossiers(params, this.callback);
             },
             "the error is 'No Document Entries found' ":function (err, results) {
                 check(err).is("No Document Entries found");
@@ -58,7 +64,8 @@ vows.describe("xdsAdapter functional tests").addBatch({
                 check(results).isNull();
             }
         }
-    }).addBatch({
+    }).
+    addBatch({
         "when getting document":{
             topic:function () {
                 xds.getDocument(xds.registry, xds.repository, constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);

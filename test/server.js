@@ -16,50 +16,6 @@ var pass = constants.goodPass;
 var badUser = constants.badUser;
 var badPass = constants.badPass;
 
-function encodeHttpBasicAuthorizationHeader(user, pass) {
-    return "Basic " + base64.encode(user + ":" + pass);
-}
-
-function getWithoutAuthorization(url, callback) {
-    var options = urlParser.parse(url);
-    var req = https.request(options, function (res) {
-        res.setEncoding("UTF-8");
-        var data = "";
-        res.on("data", function (chunk) {
-            data += chunk.toString();
-        });
-        res.on("end", function () {
-            callback(null, res, data);
-        });
-    });
-    req.on("error", function (e) {
-        callback(e, null, null);
-    });
-    req.end();
-}
-
-function get(url, user, pass, callback) {
-    var options = urlParser.parse(url);
-    options["headers"] = {
-        Authorization:encodeHttpBasicAuthorizationHeader(user, pass)
-    };
-    var req = https.request(options, function (res) {
-        res.setEncoding("UTF-8");
-        var data = "";
-        res.on("data", function (chunk) {
-            data += chunk.toString();
-        });
-        res.on("end", function () {
-            callback(null, res, data);
-        });
-    });
-    req.on("error", function (e) {
-        callback(e, null, null);
-    });
-    req.end();
-}
-
-
 vows.describe("Server behaviour").addBatch({
     "when browsing root url":{
         topic:function () {
@@ -140,6 +96,53 @@ vows.describe("Server behaviour").addBatch({
             'the body is DocumentDossier[] json':function (err, res, data) {
                 var body = JSON.parse(data);
                 //TODO
+            }
+        },
+        "when findDocumentDossiers url is well-formed and Accept is undefined":{
+            topic:function () {
+                getAcceptUndefined(url.findDocumentDossiersReq, user, pass, this.callback);
+            },
+            'the status code is 200':function (err, res, data) {
+                check(res.statusCode).is(200);
+            },
+            'the body is DocumentDossier[] json':function (err, res, data) {
+                var body = JSON.parse(data);
+                //TODO
+            }
+        },
+        "when findDocumentDossiers url is well-formed and Accept is application/json":{
+            topic:function () {
+                getAcceptJSON(url.findDocumentDossiersReq, user, pass, this.callback);
+            },
+            'the status code is 200':function (err, res, data) {
+                check(res.statusCode).is(200);
+            },
+            'the body is DocumentDossier[] json':function (err, res, data) {
+                var body = JSON.parse(data);
+                //TODO
+            }
+        },
+        "when findDocumentDossiers url is well-formed and Accept is application/xml+atom":{
+            topic:function () {
+                getAcceptAtom(url.findDocumentDossiersReq, user, pass, this.callback);
+            },
+            'the status code is 200':function (err, res, data) {
+                check(res.statusCode).is(200);
+            },
+            'the body is DocumentDossier[] atom':function (err, res, data) {
+                var body = JSON.parse(data);
+                //TODO
+            }
+        },
+        "when findDocumentDossiers url is well-formed and Accept is unsupported":{
+            topic:function () {
+                getAcceptUnsupported(url.findDocumentDossiersReq, user, pass, this.callback);
+            },
+            'the status code is 415':function (err, res, data) {
+                check(res.statusCode).is(415);
+            },
+            "the reason phrase is 'Unsupported media type'":function (err, res, data) {
+                check(data).is("Unsupported media type");
             }
         },
         "when findDocumentDossiers url has missing patientId":{
@@ -373,3 +376,73 @@ vows.describe("Server behaviour").addBatch({
             }
         }
     }).run();
+
+function encodeHttpBasicAuthorizationHeader(user, pass) {
+    return "Basic " + base64.encode(user + ":" + pass);
+}
+
+function getWithoutAuthorization(url, callback) {
+    var options = urlParser.parse(url);
+    request(options, callback);
+}
+
+function getAcceptUndefined(url, user, pass, callback) {
+    var options = urlParser.parse(url);
+    options["headers"] = {
+        Authorization:encodeHttpBasicAuthorizationHeader(user, pass)
+    };
+    request(options, callback);
+}
+
+function getAcceptJSON(url, user, pass, callback) {
+    var options = urlParser.parse(url);
+    options["headers"] = {
+        Authorization:encodeHttpBasicAuthorizationHeader(user, pass),
+        Accept: "application/json"
+    };
+    request(options, callback);
+}
+
+function getAcceptAtom(url, user, pass, callback) {
+    var options = urlParser.parse(url);
+    options["headers"] = {
+        Authorization:encodeHttpBasicAuthorizationHeader(user, pass),
+        Accept: "application/xml+atom"
+    };
+    request(options, callback);
+}
+
+function getAcceptUnsupported(url, user, pass, callback) {
+    var options = urlParser.parse(url);
+    options["headers"] = {
+        Authorization:encodeHttpBasicAuthorizationHeader(user, pass),
+        Accept: "application/unsupported"
+    };
+    request(options, callback);
+}
+
+function get(url, user, pass, callback) {
+    var options = urlParser.parse(url);
+    options["headers"] = {
+        Authorization:encodeHttpBasicAuthorizationHeader(user, pass),
+        Accept: "application/json"
+    };
+    request(options, callback);
+}
+
+function request(options, callback){
+    var req = https.request(options, function (res) {
+        res.setEncoding("UTF-8");
+        var data = "";
+        res.on("data", function (chunk) {
+            data += chunk.toString();
+        });
+        res.on("end", function () {
+            callback(null, res, data);
+        });
+    });
+    req.on("error", function (e) {
+        callback(e, null, null);
+    });
+    req.end();
+}
