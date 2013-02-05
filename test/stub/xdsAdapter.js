@@ -71,7 +71,7 @@ function findDocumentDossiers(params, callback) {
         return;
     }
 
-    if (!(params.format == null || params.format == "application/json" )) {
+    if (!(params.format == null || params.format == "application/json" || params.format == "application/xml+atom" )) {
         callback("Unsupported media type", null);
         return;
     }
@@ -98,9 +98,41 @@ function findDocumentDossiers(params, callback) {
                 updated:timestamp}
         ]}
 
-    callback(null, JSON.stringify(result));
-}
+    if (params.format == "application/xml+atom") {
+        callback(null, atomise(result));
+    }
+    else {
 
+        callback(null, JSON.stringify(result));
+    }
+}
+function atomise(result){ var tmp = [];
+    tmp.push("<?xml version='1.0' encoding='utf-8'?>");
+    tmp.push("<feed xmlns='http://www.w3.org/2005/Atom'>");
+    tmp.push("<title>MHD findDocumentDossiers response</title>");
+    tmp.push("<updated>" + result.updated + "</updated>");
+    tmp.push("<id>" + result.self + "</id>");
+    tmp.push("<author>");
+    tmp.push("<name>MHD Document Responder</name>");
+    tmp.push("</author>");
+    tmp.push("<generator uri='https://github.com/Dunmail/mhd.js' version='0.2'>mhd.js</generator>");
+    tmp.push("<link rel='self' href='" + result.self + "'/>");
+
+    for (var i = 0; i < result.entries.length; i++) {
+        var entry = result.entries[i];
+        tmp.push("<entry>");
+        tmp.push("<id>" + entry.id + "</id>");
+        tmp.push("<title>" + entry.id + "</title>");
+        tmp.push("<link rel='self' href='" + entry.self + "'/>");
+        tmp.push("<link rel='related' href='" + entry.related + "'/>");
+        tmp.push("<updated>" + result.updated + "</updated>");
+        tmp.push("</entry>");
+    }
+    tmp.push("</feed>");
+
+
+    return tmp.join("");
+}
 //Get Document [ITI-68]
 function getDocument(registryOptions, repositoryOptions, entryUuid, patientId, callback) {
     if (entryUuid == constants.unknownDocumentUuid) {
