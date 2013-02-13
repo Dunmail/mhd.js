@@ -12,7 +12,7 @@ var adapter = new xds.XdsAdapter(constants.xdsRegistry, constants.xdsRepository)
 vows.describe("xdsAdapter functional tests").addBatch({
     "when retrieving document dossier":{
         topic:function () {
-            adapter.getDocumentDossier(xds.registry, constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
+            adapter.getDocumentDossier(constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
         },
         "there is no error":function (err, dossier) {
             check(err).isNull();
@@ -25,7 +25,6 @@ vows.describe("xdsAdapter functional tests").addBatch({
         "when searching for document dossiers for patient with documents":{
             topic:function () {
                 var params = {
-                    registry:xds.registry,
                     originalUrl:"http://dummy:888/",
                     query:{ PatientID:constants.wellformedPatientId}
                 };
@@ -42,7 +41,6 @@ vows.describe("xdsAdapter functional tests").addBatch({
         "when searching for document dossiers for patient with no documents":{
             topic:function () {
                 var params = {
-                    registry:xds.registry,
                     originalUrl:"http://dummy:888/",
                     query:{ PatientID:constants.noDocumentsPatientId}
                 };
@@ -59,7 +57,7 @@ vows.describe("xdsAdapter functional tests").addBatch({
     addBatch({
         "when getting document":{
             topic:function () {
-                adapter.getDocument(xds.registry, xds.repository, constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
+                adapter.getDocument(constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
             },
             "there is no error":function (err, document) {
                 check(err).isNull();
