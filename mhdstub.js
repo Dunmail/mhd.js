@@ -1,5 +1,6 @@
 var express = require("express");
 var fs = require("fs");
+var atna = require("./lib/atna/auditRecord.js");
 var xds = require("./test/stub/xdsAdapter.js");
 var server = require("./lib/server.js");
 
@@ -21,11 +22,35 @@ var config = {
         key:fs.readFileSync("key.pem"),
         cert:fs.readFileSync("cert.pem")
     },
+    authenticate: function(req, res, next){
+        var f = express.basicAuth(function (user, pass, callback) {
+            var result = (user === 'Aladdin' && pass === 'open sesame');
+            if (result){
+                callback(null, user)
+            }
+            else {
+                var uri = req.protocol + "://" + req.headers["host"] + req.url;
+                var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
+                var user = user;
+                var outcome = atna.OUTCOME_MINORFAILURE;
+                var record = new atna.AuditRecord(uri, ip, user, outcome);
+                console.log(record.toXml());
+                callback(null, false);
+            }
+        });
+        f(req, res, next);
+    },
+    audit:function(req, res, next){
+        var uri = req.protocol + "://" + req.headers["host"] + req.url;
+        var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
+        var user = req.user;
+        var outcome = atna.OUTCOME_SUCCESS;
+
+        var record = new atna.AuditRecord(uri, ip, user, outcome);
+        console.log(record.toXml());
+        next();
+    },
     xds:xds,
-    authentication:express.basicAuth(function (user, pass, callback) {
-        var result = (user === 'Aladdin' && pass === 'open sesame');
-        callback(null, result);
-    }),
     patientIdPattern:"^[0-9]{9}[\^]{3}[&]2.16.840.1.113883.2.1.3.9.1.0.0&ISO$" //open XDS test system patient identifier
 };
 
