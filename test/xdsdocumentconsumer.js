@@ -1,7 +1,6 @@
 /*
- Tests lib/xdsdocumentconsumer against openxds services
+ Tests lib/xds/documentConsumer against openxds services
  Requires openxds services prepopulated with documents
-
 
  Server setup:
  node mhd.js
@@ -14,13 +13,13 @@ var sanitize = require("validator").sanitize;
 var assert = require("assert");
 var libxmljs = require("libxmljs");
 var constants = require("./config/constants.js");
-var xds = require("../lib/xdsDocumentConsumer.js");
+var xds = require("../lib/xds/xds.js");
 var parse = require("../lib/parseHttp.js");
 
-var registry = constants.xdsRegistry;
+var documentConsumer = new xds.DocumentConsumer(constants.xdsRegistry, constants.xdsRepository);
 
-function RegistryStoredQuery(registryOptions, query, callback) {
-    xds.RegistryStoredQuery(registryOptions, query, function (err, res) {
+function RegistryStoredQuery(query, callback) {
+    documentConsumer.registryStoredQuery(query, function (err, res) {
         res.setEncoding("UTF-8");
         var body = "";
         res.on("data", function (chunk) {
@@ -32,15 +31,8 @@ function RegistryStoredQuery(registryOptions, query, callback) {
     });
 }
 
-
-var repositoryOptions = {
-    hostname:"192.168.10.65",
-    port:2010,
-    path:"/openxds/services/DocumentRepository/"
-};
-
-function RetrieveDocumentSet(registryOptions, query, cb) {
-    xds.RetrieveDocumentSet(registryOptions, query, function (err, res) {
+function RetrieveDocumentSet(query, cb) {
+    documentConsumer.retrieveDocumentSet(query, function (err, res) {
         parse.splitMultipart(res, function (parts) {
             cb(err, res, parts);
         });
@@ -58,7 +50,7 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
                 ]
             };
 
-            RegistryStoredQuery(registry, query, this.callback);
+            RegistryStoredQuery(query, this.callback);
         },
         'the status code is 200':function (err, res, body) {
             check(res.statusCode).is(200);
@@ -81,7 +73,7 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
                 ]
             };
 
-            RegistryStoredQuery(registry, query, this.callback);
+            RegistryStoredQuery(query, this.callback);
         },
         'the status code is 200':function (err, res, body) {
             check(res.statusCode).is(200);
@@ -105,7 +97,7 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
                     ]
                 };
 
-                RegistryStoredQuery(registry, query, this.callback);
+                RegistryStoredQuery(query, this.callback);
             },
             'the status code is 200':function (err, res, body) {
                 check(res.statusCode).is(200);
@@ -129,7 +121,7 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
                     ]
                 };
 
-                RegistryStoredQuery(registry, query, this.callback);
+                RegistryStoredQuery(query, this.callback);
             },
             'the status code is 200':function (err, res, body) {
                 check(res.statusCode).is(200);
@@ -150,7 +142,7 @@ vows.describe("xdsDocumentConsumer functional tests").addBatch({
                     DocumentUniqueId:"2.16.840.1.113883.2.1.3.9.105035065001189118.1358955547866.1"
                 };
 
-                RetrieveDocumentSet(repositoryOptions, query, this.callback);
+                RetrieveDocumentSet(query, this.callback);
             },
             "the status code is 200":function (err, res, parts) {
                 check(res.statusCode).is(200);
