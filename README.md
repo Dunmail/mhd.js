@@ -8,8 +8,8 @@ Node.js implementation of IHE MHD, providing a RESTful API to access health docu
 MHD is an IHE profile for Mobile access to Health Documents. The implementation follows [trial implementation rev1.1](http://www.ihe.net/Technical_Framework/upload/IHE_ITI_Suppl_MHD.pdf) and provides a MHD Document Responder actor using an XDS Document Consumer as a proxy to XDS registry/repository. 
 
 This is a partial implementation:
-- only JSON data provided
 - findDocumentDossiers supports only XDSDocumentEntryPatientId parameter
+- audit supports only local logs
 
 Installation
 ------------
@@ -23,20 +23,14 @@ This repository includes self-signed certificates for https. These are sufficien
 certificates should be used for a production system. The paths to the certficates are set in mhd.js:
     
     options:{
-        key:fs.readFileSync("key.pem"),
-        cert:fs.readFileSync("cert.pem")
+        key:fs.readFileSync("./cert/key.pem"),
+        cert:fs.readFileSync("./cert/cert.pem")
     },
 
 The path to the xds registry/repository are set in mhd.js:
 
-    xds["registry"] = {
-        hostname: "192.168.10.65",
-        port: 2010,
-        path: "/openxds/services/DocumentRegistry/"}
-    xds["repository"] = {
-        hostname: "192.168.10.65",
-        port: 2010,
-        path: "/openxds/services/DocumentRepository/"}
+    var xdsAdapter = new xds.Adapter({hostname:"192.168.10.65", port:2010, path:"/openxds/services/DocumentRegistry/"},
+    {hostname:"192.168.10.65", port:2010, path:"/openxds/services/DocumentRepository/"});
 
 Testing
 -------
@@ -47,8 +41,7 @@ To test server routing against a stub xds adapter:
 
 To test operation against an openXds installation, configured in mhd.js (as above) and assuming presence of patientIds and entry Uuids as in test/config/constants.js:
     
-    node mhdstub.js
-    node test/openXdsIntegration.js
+    node mhd.js
     node test/openXdsWorkflow.js
 
 License
