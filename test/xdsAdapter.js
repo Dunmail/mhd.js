@@ -5,15 +5,14 @@ var vows = require("vows");
 var check = require("validator").check;
 var libxmljs = require("libxmljs");
 var constants = require("./config/constants.js");
-
 var xds = require("../lib/xdsAdapter.js");
-xds["registry"] = constants.xdsRegistry;
-xds["repository"] = constants.xdsRepository;
+
+var adapter = new xds.XdsAdapter(constants.xdsRegistry, constants.xdsRepository);
 
 vows.describe("xdsAdapter functional tests").addBatch({
     "when retrieving document dossier":{
         topic:function () {
-            xds.getDocumentDossier(xds.registry, constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
+            adapter.getDocumentDossier(xds.registry, constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
         },
         "there is no error":function (err, dossier) {
             check(err).isNull();
@@ -30,7 +29,7 @@ vows.describe("xdsAdapter functional tests").addBatch({
                     originalUrl:"http://dummy:888/",
                     query:{ PatientID:constants.wellformedPatientId}
                 };
-                xds.findDocumentDossiers(params, this.callback);
+                adapter.findDocumentDossiers(params, this.callback);
             },
             "there is no error":function (err, results) {
                 check(err).isNull();
@@ -47,7 +46,7 @@ vows.describe("xdsAdapter functional tests").addBatch({
                     originalUrl:"http://dummy:888/",
                     query:{ PatientID:constants.noDocumentsPatientId}
                 };
-                xds.findDocumentDossiers(params, this.callback);
+                adapter.findDocumentDossiers(params, this.callback);
             },
             "the error is 'No Document Entries found' ":function (err, results) {
                 check(err).is("No Document Entries found");
@@ -60,7 +59,7 @@ vows.describe("xdsAdapter functional tests").addBatch({
     addBatch({
         "when getting document":{
             topic:function () {
-                xds.getDocument(xds.registry, xds.repository, constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
+                adapter.getDocument(xds.registry, xds.repository, constants.wellformedDocumentUuid, constants.wellformedPatientId, this.callback);
             },
             "there is no error":function (err, document) {
                 check(err).isNull();
