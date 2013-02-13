@@ -122,6 +122,18 @@ vows.describe("Server behaviour").addBatch({
                 //TODO
             }
         },
+        "when findDocumentDossiers url is well-formed and Accept is any":{
+            topic:function () {
+                getAcceptAny(url.findDocumentDossiersReq, user, pass, this.callback);
+            },
+            'the status code is 200':function (err, res, data) {
+                check(res.statusCode).is(200);
+            },
+            'the body is DocumentDossier[] json':function (err, res, data) {
+                var body = JSON.parse(data);
+                //TODO
+            }
+        },
         "when findDocumentDossiers url is well-formed and Accept is application/xml+atom":{
             topic:function () {
                 getAcceptAtom(url.findDocumentDossiersReq, user, pass, this.callback);
@@ -408,6 +420,15 @@ function getAcceptAtom(url, user, pass, callback) {
     options["headers"] = {
         Authorization:encodeHttpBasicAuthorizationHeader(user, pass),
         Accept: "application/xml+atom"
+    };
+    request(options, callback);
+}
+
+function getAcceptAny(url, user, pass, callback) {
+    var options = urlParser.parse(url);
+    options["headers"] = {
+        Authorization:encodeHttpBasicAuthorizationHeader(user, pass),
+        Accept: "*/*"
     };
     request(options, callback);
 }
