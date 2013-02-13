@@ -17,9 +17,10 @@ xds["repository"] = {
 
 //create actors
 var auditRecordRepository = new atna.AuditRecordRepository(function (auditRecord) {
-    console.log(auditRecord.toXml());
+    fs.appendFile("./logs/activity.log", auditRecord.toXml() + "\r\n", "utf8", function (err) {
+        if (err) throw err;
+    });
 });
-
 
 var config = {
     name:"Mobile access to Health Documents (MHD) service [stub only]",
@@ -28,15 +29,27 @@ var config = {
         key:fs.readFileSync("key.pem"),
         cert:fs.readFileSync("cert.pem")
     },
-    auditRecordRepository: auditRecordRepository,
+    audit:{
+        auditRecordRepository:auditRecordRepository,
+        middleware:function (req, res, next) {
+            var uri = req.protocol + "://" + req.headers["host"] + req.url;
+            var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
+            var user = req.user;
+            var outcome = atna.OUTCOME_SUCCESS;
+
+            var record = new atna.AuditRecord(uri, ip, user, outcome);
+            auditRecordRepository.recordAuditEvent(record);
+            next();
+        }},
     xds:xds,
-    authenticate: function(req, res, next){
+    authenticate:function (req, res, next) {
         var f = express.basicAuth(function (user, pass, callback) {
             var result = (user === 'Aladdin' && pass === 'open sesame');
-            if (result){
+            if (result) {
                 callback(null, user)
             }
             else {
+                //if authentication fails request will be rejected before reaching audit middleware
                 var uri = req.protocol + "://" + req.headers["host"] + req.url;
                 var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
                 var user = user;
@@ -47,16 +60,6 @@ var config = {
             }
         });
         f(req, res, next);
-    },
-    audit:function(req, res, next){
-        var uri = req.protocol + "://" + req.headers["host"] + req.url;
-        var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
-        var user = req.user;
-        var outcome = atna.OUTCOME_SUCCESS;
-
-        var record = new atna.AuditRecord(uri, ip, user, outcome);
-        auditRecordRepository.recordAuditEvent(record);
-        next();
     },
     patientIdPattern:"^[0-9]{9}[\^]{3}[&]2.16.840.1.113883.2.1.3.9.1.0.0&ISO$" //open XDS test system patient identifier
 };
