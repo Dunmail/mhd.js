@@ -19,8 +19,8 @@ var config = {
     name:"Mobile access to Health Documents (MHD) service",
     port:1337,
     options:{
-        key:fs.readFileSync("key.pem"),
-        cert:fs.readFileSync("cert.pem")
+        key:fs.readFileSync("./cert/key.pem"),
+        cert:fs.readFileSync("./cert/cert.pem")
     },
     audit:{
         auditRecordRepository:auditRecordRepository,
