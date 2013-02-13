@@ -4,23 +4,16 @@ var atna = require("./lib/atna/atna.js");
 var xds = require("./test/stub/xdsAdapter.js");
 var server = require("./lib/server.js");
 
-xds["registry"] = {
-    hostname:"192.168.10.99",
-    port:2010,
-    path:"/openxds/services/DocumentRegistry/"};
-
-xds["repository"] = {
-    hostname:"192.168.10.99",
-    port:2010,
-    path:"/openxds/services/DocumentRepository/"
-};
-
 //create actors
 var auditRecordRepository = new atna.AuditRecordRepository(function (auditRecord) {
     fs.appendFile("./logs/activity.log", auditRecord.toXml() + "\r\n", "utf8", function (err) {
         if (err) throw err;
     });
 });
+
+//create adapters
+var xdsAdapter = new xds.Adapter({hostname:"192.168.10.99", port:2010, path:"/openxds/services/DocumentRegistry/"},
+    {hostname:"192.168.10.99", port:2010, path:"/openxds/services/DocumentRepository/"});
 
 var config = {
     name:"Mobile access to Health Documents (MHD) service [stub only]",
@@ -41,7 +34,7 @@ var config = {
             auditRecordRepository.recordAuditEvent(record);
             next();
         }},
-    xds:xds,
+    xds: xdsAdapter,
     authenticate:function (req, res, next) {
         var f = express.basicAuth(function (user, pass, callback) {
             var result = (user === 'Aladdin' && pass === 'open sesame');

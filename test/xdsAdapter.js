@@ -5,9 +5,9 @@ var vows = require("vows");
 var check = require("validator").check;
 var libxmljs = require("libxmljs");
 var constants = require("./config/constants.js");
-var xds = require("../lib/xdsAdapter.js");
+var xds = require("../lib/xds/xds.js");
 
-var adapter = new xds.XdsAdapter(constants.xdsRegistry, constants.xdsRepository);
+var adapter = new xds.Adapter(constants.xdsRegistry, constants.xdsRepository);
 
 vows.describe("xdsAdapter functional tests").addBatch({
     "when retrieving document dossier":{

@@ -1,15 +1,15 @@
 var constants = require("../config/constants.js");
 
-function XdsAdapter(registry, repository){
-    this.documentConsumer = new xds.DocumentConsumer(registry, repository);
+function Adapter(registry, repository){
+
 }
 
-XdsAdapter.prototype = {
-    constructor: XdsAdapter
+Adapter.prototype = {
+    constructor: Adapter
 }
 
 //Get Document Dossier [ITI-66]
-XdsAdapter.prototype.getDocumentDossier = function(entryUuid, patientId, callback) {
+Adapter.prototype.getDocumentDossier = function(entryUuid, patientId, callback) {
     if (entryUuid == constants.unknownDocumentUuid) {
         callback("Unknown Document UUID", null);
         return;
@@ -66,7 +66,7 @@ XdsAdapter.prototype.getDocumentDossier = function(entryUuid, patientId, callbac
 }
 
 //Find Document Dossiers [ITI-67]
-XdsAdapter.prototype.findDocumentDossiers = function(params, callback) {
+Adapter.prototype.findDocumentDossiers = function(params, callback) {
     if (params.query.PatientID == constants.unknownPatientId) {
         callback("Unknown PatientID", null);
         return;
@@ -140,7 +140,7 @@ function atomise(result){ var tmp = [];
     return tmp.join("");
 }
 //Get Document [ITI-68]
-XdsAdapter.prototype.getDocument = function(entryUuid, patientId, callback) {
+Adapter.prototype.getDocument = function(entryUuid, patientId, callback) {
     if (entryUuid == constants.unknownDocumentUuid) {
         callback("Unknown Document UUID", null);
         return;
@@ -240,4 +240,4 @@ XdsAdapter.prototype.getDocument = function(entryUuid, patientId, callback) {
     callback(null, document);
 }
 
-exports.XdsAdapter=XdsAdapter;
+exports.Adapter=Adapter;
