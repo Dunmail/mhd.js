@@ -77,7 +77,7 @@ Adapter.prototype.findDocumentDossiers = function(params, callback) {
         return;
     }
 
-    if (!(params.format == null || params.format == "application/json" || params.format == "application/xml+atom" )) {
+    if (!(params.format == null || params.format == "*/*" || params.format == "application/json" || params.format == "application/xml+atom" )) {
         callback("Unsupported media type", null);
         return;
     }
