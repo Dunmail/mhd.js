@@ -1,9 +1,15 @@
 var constants = require("../config/constants.js");
 
-//NB: In real implementation need to ensure that these functions are non-blocking
+function Adapter(registry, repository){
+
+}
+
+Adapter.prototype = {
+    constructor: Adapter
+}
 
 //Get Document Dossier [ITI-66]
-function getDocumentDossier(options, entryUuid, patientId, callback) {
+Adapter.prototype.getDocumentDossier = function(entryUuid, patientId, callback) {
     if (entryUuid == constants.unknownDocumentUuid) {
         callback("Unknown Document UUID", null);
         return;
@@ -60,7 +66,7 @@ function getDocumentDossier(options, entryUuid, patientId, callback) {
 }
 
 //Find Document Dossiers [ITI-67]
-function findDocumentDossiers(params, callback) {
+Adapter.prototype.findDocumentDossiers = function(params, callback) {
     if (params.query.PatientID == constants.unknownPatientId) {
         callback("Unknown PatientID", null);
         return;
@@ -134,7 +140,7 @@ function atomise(result){ var tmp = [];
     return tmp.join("");
 }
 //Get Document [ITI-68]
-function getDocument(registryOptions, repositoryOptions, entryUuid, patientId, callback) {
+Adapter.prototype.getDocument = function(entryUuid, patientId, callback) {
     if (entryUuid == constants.unknownDocumentUuid) {
         callback("Unknown Document UUID", null);
         return;
@@ -234,6 +240,4 @@ function getDocument(registryOptions, repositoryOptions, entryUuid, patientId, c
     callback(null, document);
 }
 
-exports.getDocumentDossier = getDocumentDossier;
-exports.findDocumentDossiers = findDocumentDossiers;
-exports.getDocument = getDocument;
+exports.Adapter=Adapter;
