@@ -6,8 +6,8 @@
 var https = require("https");
 var vows = require("vows");
 var check = require("validator").check;
-var constants = require("./config/constants.js");
-var url = require("./config/url.js");
+var constants = require("./../test/config/constants.js");
+var url = require("./../test/config/url.js");
 var urlParser = require("url");
 var base64 = require('b64');
 
