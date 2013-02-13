@@ -1,7 +1,7 @@
 /*
  Server setup to test routing against stub xdsdocumentconsumer
  node mhdstub.js
-  */
+ */
 
 var https = require("https");
 var vows = require("vows");
@@ -85,7 +85,7 @@ vows.describe("Server behaviour").addBatch({
                 //TODO
             }
         }
-}).addBatch({
+    }).addBatch({
         "when findDocumentDossiers url is well-formed":{
             topic:function () {
                 get(url.findDocumentDossiersReq, user, pass, this.callback);
@@ -309,6 +309,14 @@ vows.describe("Server behaviour").addBatch({
                 check(res.statusCode).is(200);
             }
         },
+        "when GetDocument url for pdf is well-formed":{
+            topic:function () {
+                get(url.getDocumentReq_pdf, user, pass, this.callback);
+            },
+            "the status code is 200":function (err, res, data) {
+                check(res.statusCode).is(200);
+            }
+        },
         "when GetDocument url has missing uuid":{
             topic:function () {
                 get(url.getDocumentReq_uuidMissing, user, pass, this.callback);
@@ -398,7 +406,7 @@ function getAcceptJSON(url, user, pass, callback) {
     var options = urlParser.parse(url);
     options["headers"] = {
         Authorization:encodeHttpBasicAuthorizationHeader(user, pass),
-        Accept: "application/json"
+        Accept:"application/json"
     };
     request(options, callback);
 }
@@ -407,7 +415,7 @@ function getAcceptAtom(url, user, pass, callback) {
     var options = urlParser.parse(url);
     options["headers"] = {
         Authorization:encodeHttpBasicAuthorizationHeader(user, pass),
-        Accept: "application/xml+atom"
+        Accept:"application/xml+atom"
     };
     request(options, callback);
 }
@@ -416,7 +424,7 @@ function getAcceptUnsupported(url, user, pass, callback) {
     var options = urlParser.parse(url);
     options["headers"] = {
         Authorization:encodeHttpBasicAuthorizationHeader(user, pass),
-        Accept: "application/unsupported"
+        Accept:"application/unsupported"
     };
     request(options, callback);
 }
@@ -425,12 +433,12 @@ function get(url, user, pass, callback) {
     var options = urlParser.parse(url);
     options["headers"] = {
         Authorization:encodeHttpBasicAuthorizationHeader(user, pass),
-        Accept: "application/json"
+        Accept:"application/json"
     };
     request(options, callback);
 }
 
-function request(options, callback){
+function request(options, callback) {
     var req = https.request(options, function (res) {
         res.setEncoding("UTF-8");
         var data = "";

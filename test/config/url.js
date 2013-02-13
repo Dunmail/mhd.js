@@ -20,6 +20,7 @@ exports.findDocumentDossiersReq_patientIdNotKnown = constants.root + "net.ihe/Do
 exports.findDocumentDossiersReq_patientIdNoDocuments = constants.root + "net.ihe/DocumentDossier/search?PatientID=" + escape(constants.noDocumentsPatientId);
 
 exports.getDocumentReq = constants.root + "net.ihe/Document/" + constants.wellformedDocumentUuid + "/?PatientID=" + escape(constants.wellformedPatientId);
+exports.getDocumentReq_pdf = constants.root + "net.ihe/Document/" + constants.pdfDocumentUuid + "/?PatientID=" + escape(constants.wellformedPatientId);
 exports.getDocumentReq_uuidMissing = constants.root + "net.ihe/Document/?PatientID=" + escape(constants.wellformedPatientId);
 exports.getDocumentReq_uuidMalformed = constants.root + "net.ihe/Document/" + constants.malformedDocumentUuid + "/?PatientID=" + escape(constants.wellformedPatientId);
 exports.getDocumentReq_uuidNotKnown = constants.root + "net.ihe/Document/" + constants.unknownDocumentUuid + "/?PatientID=" + escape(constants.wellformedPatientId);
