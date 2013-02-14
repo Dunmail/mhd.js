@@ -45,7 +45,7 @@ var xdsAdapter = new xds.Adapter({hostname:"192.168.10.65", port:2010, path:"/op
 
 //create service config
 var config = {
-        name:"Mobile access to Health Documents (MHD) service [stub only]",
+        name:"Mobile access to Health Documents (MHD) service",
         port:1337,
         options:{
             key:fs.readFileSync("./cert/key.pem"),
