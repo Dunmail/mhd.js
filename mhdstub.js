@@ -5,7 +5,7 @@ var atna = require("./lib/atna/atna.js");
 var xds = require("./test/stub/xdsAdapter.js");
 var server = require("./lib/server.js");
 
-//create dependencies
+//create helper services
 var errorRecordRepository = new err.ErrorRecordRepository(function (errorRecord) {
     fs.exists("./logs", function (exists) {
         if (exists) {
@@ -51,7 +51,7 @@ var config = {
         key:fs.readFileSync("./cert/key.pem"),
         cert:fs.readFileSync("./cert/cert.pem")
     },
-    handleError:function(error, req, res, next){
+    handleError:function (error, req, res, next) {
         var uri = req.protocol + "://" + req.headers["host"] + req.url;
         var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
         var user = user;
@@ -80,7 +80,6 @@ var config = {
         f(req, res, next);
     },
     audit:{
-        auditRecordRepository:auditRecordRepository,
         middleware:function (req, res, next) {
             var uri = req.protocol + "://" + req.headers["host"] + req.url;
             var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
@@ -89,9 +88,18 @@ var config = {
             var record = new atna.AuditRecord(uri, ip, user, outcome);
             auditRecordRepository.recordAuditEvent(record);
             next();
-        }},
+        },
+        serverEvent:function (id) {
+            var ip = "127.0.0.1";
+            var user = "SYSTEM";
+            var outcome = atna.OUTCOME_SUCCESS;
+            var record = new atna.AuditRecord(id, ip, user, outcome);
+            auditRecordRepository.recordAuditEvent(record);
+        }
+    },
     xds:xdsAdapter,
     patientIdPattern:"^[0-9]{9}[\^]{3}[&]2.16.840.1.113883.2.1.3.9.1.0.0&ISO$" //open XDS test system patient identifier
 };
 
+//start server
 server.start(config);
