@@ -100,8 +100,8 @@ Adapter.prototype.findDocumentDossiers = function (params, callback) {
                 updated:timestamp},
             {
                 id:"9876",
-                self:constants.root + "/net.ihe/DocumentDossier/" + constants.wellformedDocumentUuid + "/?PatientID=" + params.query.PatientID,
-                related:constants.root + "/net.ihe/Document/" + constants.wellformedDocumentUuid + "/?PatientID=" + params.query.PatientID,
+                self:constants.root + "/net.ihe/DocumentDossier/" + constants.pdfDocumentUuid + "/?PatientID=" + params.query.PatientID,
+                related:constants.root + "/net.ihe/Document/" + constants.pdfDocumentUuid + "/?PatientID=" + params.query.PatientID,
                 updated:timestamp}
         ]}
 

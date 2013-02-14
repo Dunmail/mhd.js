@@ -45,61 +45,66 @@ var xdsAdapter = new xds.Adapter({hostname:"192.168.10.99", port:2010, path:"/op
 
 //create service config
 var config = {
-    name:"Mobile access to Health Documents (MHD) service [stub only]",
-    port:1337,
-    options:{
-        key:fs.readFileSync("./cert/key.pem"),
-        cert:fs.readFileSync("./cert/cert.pem")
-    },
-    handleError:function (error, req, res, next) {
-        var uri = req.protocol + "://" + req.headers["host"] + req.url;
-        var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
-        var user = user;
-        var outcome = err.ERROR_EXCEPTION;
-        var record = new err.ErrorRecord(uri, ip, user, outcome, error.stack);
-        errorRecordRepository.recordError(record);
-        res.send(500);
-    },
-    authenticate:function (req, res, next) {
-        var f = express.basicAuth(function (user, pass, callback) {
-            var result = (user === 'Aladdin' && pass === 'open sesame');
-            if (result) {
-                callback(null, user)
-            }
-            else {
-                //if authentication fails request will be rejected before reaching audit middleware
+        name:"Mobile access to Health Documents (MHD) service [stub only]",
+        port:1337,
+        options:{
+            key:fs.readFileSync("./cert/key.pem"),
+            cert:fs.readFileSync("./cert/cert.pem")
+        },
+        error:{
+            middleware:function (error, req, res, next) {
                 var uri = req.protocol + "://" + req.headers["host"] + req.url;
                 var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
                 var user = user;
-                var outcome = atna.OUTCOME_MINORFAILURE;
+                var outcome = err.ERROR_EXCEPTION;
+                var record = new err.ErrorRecord(uri, ip, user, outcome, error.stack);
+                errorRecordRepository.recordError(record);
+                res.send(500);
+            }
+        },
+        authenticate:{
+            middleware:function (req, res, next) {
+                var f = express.basicAuth(function (user, pass, callback) {
+                    var result = (user === 'Aladdin' && pass === 'open sesame');
+                    if (result) {
+                        callback(null, user)
+                    }
+                    else {
+                        //if authentication fails request will be rejected before reaching audit middleware
+                        var uri = req.protocol + "://" + req.headers["host"] + req.url;
+                        var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
+                        var user = user;
+                        var outcome = atna.OUTCOME_MINORFAILURE;
+                        var record = new atna.AuditRecord(uri, ip, user, outcome);
+                        auditRecordRepository.recordAuditEvent(record);
+                        callback(null, false);
+                    }
+                });
+                f(req, res, next);
+            }
+        },
+        audit:{
+            middleware:function (req, res, next) {
+                var uri = req.protocol + "://" + req.headers["host"] + req.url;
+                var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
+                var user = req.user;
+                var outcome = atna.OUTCOME_SUCCESS;
                 var record = new atna.AuditRecord(uri, ip, user, outcome);
                 auditRecordRepository.recordAuditEvent(record);
-                callback(null, false);
+                next();
+            },
+            serverEvent:function (id) {
+                var ip = "127.0.0.1";
+                var user = "SYSTEM";
+                var outcome = atna.OUTCOME_SUCCESS;
+                var record = new atna.AuditRecord(id, ip, user, outcome);
+                auditRecordRepository.recordAuditEvent(record);
             }
-        });
-        f(req, res, next);
-    },
-    audit:{
-        middleware:function (req, res, next) {
-            var uri = req.protocol + "://" + req.headers["host"] + req.url;
-            var ip = req.header("x-forwarded-for") || req.connection.remoteAddress;
-            var user = req.user;
-            var outcome = atna.OUTCOME_SUCCESS;
-            var record = new atna.AuditRecord(uri, ip, user, outcome);
-            auditRecordRepository.recordAuditEvent(record);
-            next();
         },
-        serverEvent:function (id) {
-            var ip = "127.0.0.1";
-            var user = "SYSTEM";
-            var outcome = atna.OUTCOME_SUCCESS;
-            var record = new atna.AuditRecord(id, ip, user, outcome);
-            auditRecordRepository.recordAuditEvent(record);
-        }
-    },
-    xds:xdsAdapter,
-    patientIdPattern:"^[0-9]{9}[\^]{3}[&]2.16.840.1.113883.2.1.3.9.1.0.0&ISO$" //open XDS test system patient identifier
-};
+        xds:xdsAdapter,
+        patientIdPattern:"^[0-9]{9}[\^]{3}[&]2.16.840.1.113883.2.1.3.9.1.0.0&ISO$" //open XDS test system patient identifier
+    }
+    ;
 
 //start server
 server.start(config);
