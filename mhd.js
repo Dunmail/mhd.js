@@ -42,6 +42,10 @@ var auditRecordRepository = new atna.AuditRecordRepository(function (auditRecord
 });
 var xdsAdapter = new xds.Adapter({hostname:"192.168.10.65", port:2010, path:"/openxds/services/DocumentRegistry/"},
     {hostname:"192.168.10.65", port:2010, path:"/openxds/services/DocumentRepository/"});
+var password = [];
+password['Dunmail'] = 'letmein';
+password['Aladdin'] = 'open sesame';  //Used for unit testing
+
 
 //create service config
 var config = {
@@ -65,9 +69,9 @@ var config = {
         authenticate:{
             middleware:function (req, res, next) {
                 var f = express.basicAuth(function (user, pass, callback) {
-                    var result = (user === 'Aladdin' && pass === 'open sesame');
+                    var result = (password[user] && pass === password[user]);
                     if (result) {
-                        callback(null, user)
+                        callback(null, user);
                     }
                     else {
                         //if authentication fails request will be rejected before reaching audit middleware
@@ -103,8 +107,7 @@ var config = {
         },
         xds:xdsAdapter,
         patientIdPattern:"^[0-9]{9}[\^]{3}[&]2.16.840.1.113883.2.1.3.9.1.0.0&ISO$" //open XDS test system patient identifier
-    }
-    ;
+    };
 
 //start server
 server.start(config);
