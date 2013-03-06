@@ -8,7 +8,8 @@
         "validator": "== 0.4.x",
         "vows": ">= 0.6.2",
         "b64": ">= 1.0.1",
-        "libxmljs" : ">= 0.6.1"
+        "libxmljs" : ">= 0.6.1",
+        "forever" : ">= 0.10.0"
     },
     "license": "Apache 2.0"
 }
