@@ -11,6 +11,11 @@ This is a partial implementation:
 - findDocumentDossiers supports only PatientId parameter
 - document posting not implemented
 
+Status
+------
+
+[![Build Status](https://travis-ci.org/Dunmail/mhd.js.png)](https://travis-ci.org/Dunmail/mhd.js)
+
 Installation
 ------------
     npm install mhd
