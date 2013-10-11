@@ -1,15 +1,42 @@
 {
     "name": "mhd.js",
-    "description": "IHE MHD service",
-    "version": "0.0.1",
+    "description": "IHE MHD profile service facade for node.js",
+    "version": "0.1.0",
+    "author": {
+        "name": "Dunmail Hodkinson",
+        "email": "dunmail@stanegate.net"
+    },
+    "contributors": [
+        {
+            "name": "Dunmail Hodkinson",
+            "email": "dunmail@stanegate.net"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/dunmail/mhd.js.git"
+    },
+    "bugs": {
+        "url": "http://github.com/dunmail/mhd.js/issues"
+    },
     "private": true,
     "dependencies": {
-        "express": ">= 3.0",
-        "validator": "== 0.4.2",
-        "vows": ">= 0.6.2",
+        "dependable": ">= 0.2.5",
+        "mocha": ">= 1.13.0",
+        "sinon": ">= 1.7.3",
+        "validator": ">= 1.5.1",
+        "express": "== 3.x",
+        "supertest": ">= 0.8.0",
         "b64": ">= 1.0.1",
-        "libxmljs" : ">= 0.6.1",
-        "forever" : ">= 0.9.2"
+        "libxmljs" : ">= 0.6.1"
     },
-    "license": "Apache 2.0"
+    "scripts": {
+        "test": "mocha --recursive test"
+    },
+    "licenses": [
+        {
+            "type": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0"
+        }
+    ]
 }
