@@ -30,16 +30,6 @@ Use
     var mhd = require('mhd').mhd;
     var http = require("http");
 
-Implement an auditRecordWriter callback. The following implementation writes to the console:
-
-    var auditRecordWriter = {
-        write: function(auditRecord, callback) {
-            console.log(auditRecord.toXml());
-            callback(null);
-        }
-    }
-
-
 Implement an adapter for your document repository. The following implementation returns static data: 
 
     var repositoryAdapter = {
@@ -186,12 +176,11 @@ Implement an adapter for your document repository. The following implementation 
     }
 
 
-Register the callbacks with mhd. As mhd is an express.app it can be started as usual:
+Register the callback with mhd. As mhd is an express.app it can be started as usual:
 
     function start(){
         console.log('Starting service');
 
-        mhd.registerAuditRecordWriter(auditRecordWriter);
         mhd.registerRepositoryAdapter(repositoryAdapter);
 
         var svc = http.createServer(mhd);
