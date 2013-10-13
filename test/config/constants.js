@@ -4,6 +4,7 @@ exports.pdfDocumentUuid = 'urn:uuid:50a0807a-10a0-7c10-6296-71ed0c235b00';
 exports.malformedDocumentUuid = 'urn:uuid:14a9fdec0af4-45bb-adf2';
 exports.unknownDocumentUuid = 'urn:uuid:10000000-0000-0000-0000-000000000000';
 exports.deprecatedDocumentUuid = 'urn:uuid:14a9fdec-0af4-45bb-adf2-d752b4900000';
+exports.internalErrorDocumentUuid = 'urn:uuid:eeeeeeee-eee4-eeee-eeee-eeeeeeeeeeee';
 
 /* PatientId */
 exports.wellformedPatientId = '223568611^^^&2.16.840.1.113883.2.1.3.9.1.0.0&ISO';
