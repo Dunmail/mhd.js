@@ -1,6 +1,6 @@
 {
     "name":"mhd",
-    "version":"0.2.0",
+    "version":"0.2.1",
     "description":"IHE MHD profile service facade for node.js",
     "keywords":["IHE", "MHD", "mHealth"],
     "homepage":"http://github.com/Dunmail/mhd.js",
