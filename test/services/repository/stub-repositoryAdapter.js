@@ -18,6 +18,11 @@ RepositoryAdapter.prototype = {
             return;
         }
 
+        if (entryUuid == constants.internalErrorDocumentUuid){
+            callback('Error thrown for test case', null);
+            return;
+        }
+
         if (patientId == constants.unknownPatientId){
             callback('Unknown PatientID', null);
             return;

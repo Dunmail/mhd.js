@@ -1,6 +1,5 @@
 var mhd = require('../lib/mhd.js').mhd;
 
-var AuditRecordWriter = require('./services/audit/stub-auditRecordWriter.js').AuditRecordWriter;
 var RepositoryAdapter = require('./services/repository/stub-repositoryAdapter.js').RepositoryAdapter;
 
 var assert = require('assert');
@@ -12,23 +11,18 @@ var routes = require('./config/routes.js');
 var responses = require('./config/responses.js');
 
 describe('mhd', function () {
-    var writer = new AuditRecordWriter();
     var adapter = new RepositoryAdapter();
 
-    var writer_write_spy;
     var adapter_getDocumentDossier_spy;
 
     beforeEach(function () {
-        mhd.registerAuditRecordWriter(writer);
         mhd.registerRepositoryAdapter(adapter);
 
-        writer_write_spy = sinon.spy(writer, 'write');
         adapter_getDocumentDossier_spy = sinon.spy(adapter, 'getDocumentDossier');
 
     });
 
     afterEach(function () {
-        writer.write.restore();
         adapter.getDocumentDossier.restore();
     });
 
@@ -117,6 +111,12 @@ describe('mhd', function () {
                 request(mhd)
                     .get(routes.getDocumentDossierReq_uuidDeprecated)
                     .expect(410, 'Document Entry UUID deprecated', done);
+            });
+
+            it('returns 500 if internal error', function (done) {
+                request(mhd)
+                    .get(routes.getDocumentDossierReq_uuidInternalError)
+                    .expect(500, done);
             });
 
             it('returns 400 if patientId missing', function (done) {

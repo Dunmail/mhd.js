@@ -8,6 +8,7 @@ exports.getDocumentDossierReq_uuidMissing = '/net.ihe/DocumentDossier/?PatientID
 exports.getDocumentDossierReq_uuidMalformed = '/net.ihe/DocumentDossier/' + constants.malformedDocumentUuid + '/?PatientID=' + escape(constants.wellformedPatientId);
 exports.getDocumentDossierReq_uuidNotKnown = '/net.ihe/DocumentDossier/' + constants.unknownDocumentUuid + '/?PatientID=' + escape(constants.wellformedPatientId);
 exports.getDocumentDossierReq_uuidDeprecated = '/net.ihe/DocumentDossier/' + constants.deprecatedDocumentUuid + '/?PatientID=' + escape(constants.wellformedPatientId);
+exports.getDocumentDossierReq_uuidInternalError = '/net.ihe/DocumentDossier/' + constants.internalErrorDocumentUuid + '/?PatientID=' + escape(constants.wellformedPatientId);
 exports.getDocumentDossierReq_patientIdMissing = '/net.ihe/DocumentDossier/' + constants.wellformedDocumentUuid + '/';
 exports.getDocumentDossierReq_patientIdEmpty = '/net.ihe/DocumentDossier/' + constants.wellformedDocumentUuid + '/?PatientID=';
 exports.getDocumentDossierReq_patientIdMalformed = '/net.ihe/DocumentDossier/' + constants.wellformedDocumentUuid + '/?PatientID=' + escape(constants.malformedPatientId);
