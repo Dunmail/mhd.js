@@ -131,16 +131,21 @@ describe('Repository', function () {
 
     describe('getDocumentDossier() [ITI-66]', function () {
         var subject = new repository.Repository();
+        var container_old;
         var spy;
 
         beforeEach(function () {
             var resolver = new Resolver();
+            container_old = resolver.container;
             resolver.container = dependable.container();
 
             spy = sinon.spy(adapter, 'getDocumentDossier');
         });
 
         afterEach(function () {
+            var resolver = new Resolver();
+            resolver.container = container_old;
+
             adapter.getDocumentDossier.restore();
         });
 
@@ -221,7 +226,7 @@ describe('Repository', function () {
             var params = {
                 originalUrl:"http://dummy:888/",
                 query:{ PatientID:constants.wellformedPatientId},
-                format: constants.mediaType_unsupported
+                format:constants.mediaType_unsupported
             };
             subject.findDocumentDossiers(params.query, params.format, function (err, res) {
                 check(err).is('Unsupported media type');
@@ -234,16 +239,20 @@ describe('Repository', function () {
 
     describe('findDocumentDossiers() [ITI-67]', function () {
         var subject = new repository.Repository();
+        var container_old;
         var spy;
 
         beforeEach(function () {
             var resolver = new Resolver();
+            container_old = resolver.container;
             resolver.container = dependable.container();
 
             spy = sinon.spy(adapter, 'findDocumentDossiers');
         });
 
         afterEach(function () {
+            var resolver = new Resolver();
+            resolver.container = container_old;
             adapter.findDocumentDossiers.restore();
         });
 
@@ -331,16 +340,21 @@ describe('Repository', function () {
 
     describe('getDocument() [ITI-68]', function () {
         var subject = new repository.Repository();
+        var container_old;
         var spy;
 
         beforeEach(function () {
             var resolver = new Resolver();
+            container_old = resolver.container;
             resolver.container = dependable.container();
 
             spy = sinon.spy(adapter, 'getDocumentDossier');
         });
 
         afterEach(function () {
+            var resolver = new Resolver();
+            resolver.container = container_old;
+
             adapter.getDocumentDossier.restore();
         });
 
