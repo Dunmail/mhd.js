@@ -27,7 +27,7 @@ Testing
 Use
 ---
 
-    var mhd = require('mhd').mhd;
+    var mhd = require('mhd');
     var http = require("http");
 
 Implement an adapter for your document repository. The following implementation returns static data: 
@@ -176,14 +176,31 @@ Implement an adapter for your document repository. The following implementation 
     }
 
 
-Register the callback with mhd. As mhd is an express.app it can be started as usual:
+Create the service config:
+
+    var config = {
+        repositoryAdapter: new RepositoryAdapter(),
+        middleware: {
+            logger: mhd.logger('./logs/'),
+            authentication: mhd.basicAuth(function(user, pass, callback){
+                if (user == 'Aladdin' && pass == 'letmein'){
+                    callback(null, user);
+                }
+                else {
+                    callback(null, false);
+                }
+            })
+        }
+    }
+    var app = mhd.app(config);
+
+
+Register the callback with mhd. As mhd.app is an express.app it can be started as usual:
 
     function start(){
         console.log('Starting service');
 
-        mhd.registerRepositoryAdapter(repositoryAdapter);
-
-        var svc = http.createServer(mhd);
+        var svc = http.createServer(app);
         svc.listen(1337);
 
         console.log('Service listening on http://127.0.0.1:1337');
