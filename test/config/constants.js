@@ -15,6 +15,11 @@ exports.noDocumentsPatientId = '223568612^^^&2.16.840.1.113883.2.1.3.9.1.0.0&ISO
 exports.patientIdPattern_test = '^[0-9]{9}[\^]{3}[&]2.16.840.1.113883.2.1.3.9.1.0.0&ISO$';
 exports.patientIdPattern_unvalidatedNHS = '^[0-9]{10}[\^]{3}[&]2.16.840.1.113883.2.1.3.2.4.18.23&ISO$';
 
+/* Authentication */
+exports.goodUser = "Aladdin";
+exports.goodPass = "open sesame";
+exports.badUser = "Sorcerer";
+exports.badPass = "keep me out";
 
 exports.mediaType_unsupported = 'application/unsupported';
 exports.mediaType_undefined = undefined;

@@ -182,7 +182,15 @@ Create the service config:
     var config = {
         repositoryAdapter: new RepositoryAdapter(),
         middleware: {
-            logger: mhd.logger('./logs/')
+            logger: mhd.logger('./logs/'),
+            authentication: mhd.basicAuth(function(user, pass, callback){
+                if (user == 'Aladdin' && pass == 'letmein'){
+                    callback(null, user);
+                }
+                else {
+                    callback(null, false);
+                }
+            })
         }
     }
     var app = mhd.app(config);

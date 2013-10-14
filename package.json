@@ -31,7 +31,8 @@
         "validator":">= 1.5.1",
         "mocha":">= 1.13.0",
         "sinon":">= 1.7.3",
-        "supertest":">= 0.8.0"
+        "supertest":">= 0.8.0",
+        "b64":">=1.0.1"
     },
     "scripts":{
         "test":"mocha --recursive test"
