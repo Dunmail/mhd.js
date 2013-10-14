@@ -179,7 +179,7 @@ Implement an adapter for your document repository. The following implementation 
 Create the service config:
 
     var config = {
-        repositoryAdapter: new RepositoryAdapter(),
+        repositoryAdapter: repositoryAdapter,
         middleware: {
             logger: mhd.logger('./logs/'),
             authentication: mhd.basicAuth(function(user, pass, callback){
