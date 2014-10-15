@@ -13,6 +13,7 @@ This is a partial implementation:
 
 Status
 ------
+Ongoing work to rationalise MHD with HL7 FHIR means that this implementation is no longer relevant and won't be actively maintained.
 
 [![Build Status](https://travis-ci.org/Dunmail/mhd.js.png)](https://travis-ci.org/Dunmail/mhd.js)
 
